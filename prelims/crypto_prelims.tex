@@ -1,0 +1,321 @@
+\chapter{Cryptographic Preliminaries}
+
+Before delving into the details of \RPlus protocol, let us equip ourselves with some background knowledge about the math of cryptocurrencies.
+
+
+\section{Notation}
+Let $\mathcal{G} = \{ \G, q, g \}$ be the description of a cyclic group $\G$ of prime order $q$ with generator $g$ of $\G$. Let $h\in \G$ be another random generator of $\G$ such that the discrete logarithm relation between $g$ and $h$ is not known. Let
+$\G^n$ and $\Z^n_q$ be the $n$-ary Cartesian powers of sets $\G$ and $\Z_q$ respectively.
+%TODO: Check the second part of the following statement.
+% Yes, it is.
+Group elements which are Pedersen commitments are denoted by uppercase letters and randomly chosen group elements are denoted by lowercase letters.
+% TODO: Check if the following statement is true after the rewrite.
+% It is true and necessary too. Matrix description not necessary, so removing it.
+Bold font denotes vectors.
+Inner product of two vectors $\textbf{a}, \textbf{b} \in \Z_q^n$ is defined as $\langle \textbf{a},\textbf{b} \rangle \coloneqq \sum_{i=1}^{n} a_i \cdot b_i$ where $\textbf{a}=(a_1,\dots, a_n), \textbf{b}=(b_1,\dots,b_n)$. Further, Hadamard and Kronecker products are defined respectively as, $\textbf{a} \circ \textbf{b} \coloneqq (a_1 \cdot b_1, \dots, a_n \cdot b_n) \in \mathbb{Z}_q^n$, $\textbf{a} \otimes \textbf{c} \coloneqq (a_1 \textbf{c}, \dots, a_n \textbf{c}) \in \mathbb{Z}_q^{nm}$ where $\textbf{c} \in \mathbb{Z}_q^m$. For a base vector $\textbf{g} = (g_1, \dots, g_n) \in \G^n$, vector exponentiation is defined as $\textbf{g}^{\textbf{a}} = \prod_{i=1}^{n}g_i^{a_i} \in \G$. For a scalar $u \in \Z_q^{\ast}$, we denote its consecutive powers in the form of a vector $\vecnb{u}^{n} \coloneqq (1, u, u^2, \dots, u^{n-1})$.
+To represent the exponentiation of all components of a vector $\textbf{a}$ by the same scalar $k \in \Z_q$, we use $\textbf{a}^{\circ k}$ to mean $(a_1^k, a_2^k, \ldots,a_n^{k})$.
+If an element $a$ is chosen uniformly from a set $A$, such a choice is denoted by $a \rgen A$.
+We denote the relation \emph{Relation} using the specified input and witness as $\{ (Public \ Input; \ Witness): Relation \}$.
+We refer to $\mathcal{A}$ as a \textsf{PPT} adversary which is a probabilistic Turing Machine that runs in polynomial time in the security parameter $\lambda$.
+An \emph{interactive proof} for the decision problem $\pi$ is described as follows:
+\begin{enumerate}
+    \item There are two participants, a \textcolor{blue}{prover} $\P$ and a \textcolor{blue}{verifier} $\V$.
+    \item The proof consists of a specified number of rounds.
+    \item In the beginning, both participants get the same input.
+    \item In each round, the verifier challenges the prover, and the prover responds
+    to the challenge.
+    \item Both the verifier and the prover can perform some private computation.
+    \item At the end, the verifier states whether he was convinced or not.
+\end{enumerate}
+
+
+\section{Assumptions}
+\begin{defn}[Discrete Log Relation]
+    For all PPT adversaries $\mathcal{A}$ and for all $n\ge2$, $\exists$ a negligible function $\mu (\lambda)$ s.t
+    \begin{equation*}
+        \Pr 
+        \Big[
+        \begin{tabular}{ll}
+             $\G = Setup(1^{\lambda}), g_1, \dots, g_n \leftarrow \ \G$ ;
+             &
+             \multirow{2}{*}{$\text{:} \exists a_i \neq 0 \wedge \prod_{i=1}^{n} g_{i}^{a_i} = 1$}\\
+             $a_1, \dots, a_n \in \ \Z_p \leftarrow \mathcal{A}(\G, g_1, \dots, g_n)$
+             & 
+        \end{tabular}
+        \Big] 
+      \leq \mu(\lambda)
+    \end{equation*}
+   
+    \vspace{0.2mm}
+\end{defn} 
+We say $\prod_{i=1}^{n} g_{i}^{a_i} = 1$ is a non trivial discrete log relation between $g_1, \dots, g_n$. If the Discrete Log Relation assumption stands, it implies that no \textsf{PPT} adversary can find a non-trivial relation between randomly chosen group elements. 
+
+We use additional cryptographic assumptions such as Decisional Diffie-Hellman and its variants as described in \cite{Lai2019}.
+
+\section{Cryptographic Commitments}
+
+\begin{defn}[Commitments]
+    A non-interactive commitment consists of two PPT algorithms {\normalfont(Setup, Com)}. For a message $x \in {\normalfont \textbf{M}_{pp}}$ (message space), the algorithm proceeds as follows:
+    \begin{itemize}
+    \setlength\itemsep{0.3em}
+        \item public parameters $pp \leftarrow {\normalfont Setup}(1^{\lambda})$ for security paramter $\lambda$
+        \item {\normalfont Com}$_{pp} : {\normalfont \textbf{M}_{pp}} \times {\normalfont \textbf{R}_{pp}} \rightarrow {\normalfont \textbf{C}_{pp}}$, 
+        where ${\normalfont \textbf{R}_{pp}}$ is randomness space
+        \item $r \leftarrow {\normalfont \textbf{R}_{pp}}$ and compute {\normalfont \textbf{com}} = {\normalfont Com}$_{pp}(x;r)$
+    \end{itemize}
+\end{defn}
+
+\begin{defn}[Homomorphic Commitments]
+    A homomorphic commitment is a non-interactive commitment such that ${\normalfont \textbf{M}_{pp}}$, ${\normalfont \textbf{R}_{pp}}$, ${\normalfont \textbf{C}_{pp}}$ are all abelian groups, and $\forall \ x_1, x_2 \in {\normalfont \textbf{M}_{pp}}, r_1, r_2 \in {\normalfont \textbf{R}_{pp}}$, we have 
+\end{defn}
+\begin{equation*}
+    \text{Com}(x_1; r_1) + \text{Com}(x_2; r_2) = \text{Com}(x_1+ x_2; r_1+r_2)
+\end{equation*}
+
+\begin{defn}[Hiding Commitment]
+    A commitment scheme is said to be hiding if for all PPT adversaries $\mathcal{A}$, $\exists \mu(\lambda)$, a negligible function such that,  
+\end{defn}
+\begin{equation*}
+        \Bigg|
+        \Pr
+        \Bigg[
+        \begin{tabular}{c | l}
+             \multirow{3}{*}{$\textit{b'=b}$} 
+             &
+             $\textit{pp} \leftarrow \text{Setup}(1^{\lambda})$;\\
+             &
+             $(\textit{x}_0,x_1) \in \text{\textbf{M}}_{pp}^2 \leftarrow \mathcal{A}(pp), \
+             b \leftarrow \{0,1\}, \ 
+             r \leftarrow \text{\textbf{R}}_{pp},$ \\
+             &
+             $\textbf{com} = Com(\textit{x}_b; r),\ b' \leftarrow \mathcal{A}(pp, \ \textbf{com})$
+        \end{tabular}
+        \Bigg]
+        - \frac{1}{2}
+        \Bigg|
+        \leq \mu(\lambda)
+\end{equation*}
+\textit{where the probability is over $b', r, Setup \ \text{and} \ \mathcal{A}$. For perfectly hiding schemes, $\mu(\lambda)=0$.}
+
+
+\begin{defn}[Binding Commitment]
+    A commitment scheme is said to be binding if for all PPT adversaries $\mathcal{A}$, $\exists \mu(\lambda)$, a negligible function such that,
+\end{defn}
+\begin{equation*}
+        \Pr 
+        \Bigg[
+        \begin{tabular}{c | c}
+             \multirow{2}{*}{$\text{Com}(\textit{x}_0;r_0)= \text{Com}(\textit{x}_1;r_1) \wedge x_0 \neq x_1$} 
+             &
+             $\textit{pp} \leftarrow \text{Setup}(1^{\lambda})$,\\
+             &
+             $\textit{x}_0, x_1, r_0, r_1 \leftarrow \mathcal{A}(pp)$
+        \end{tabular}
+        \Bigg] 
+        \leq \mu(\lambda)
+\end{equation*}
+\textit{where the probability is over Setup and $\mathcal{A}$. Again, if $\mu(\lambda)=0$ then we say the scheme is perfectly binding.}
+
+\begin{defn}[Pedersen Commitment]
+    ${\normalfont \textbf{M}}_{pp}, {\normalfont \textbf{R}}_{pp} = \mathbb{Z}_p$, ${\normalfont \textbf{C}}_{pp} = \mathbb{G}$ of \\order $p$.
+    \begin{itemize}
+        \item {\normalfont Setup}: $g, h \leftarrow \mathbb{G}$
+        \item {\normalfont Com}$(x; r) = (g^x h^r)$
+    \end{itemize}
+\end{defn}
+
+\begin{defn}[Pedersen Vector Commitment]
+    {\normalfont \textbf{M}}$_{pp} = \mathbb{Z}_p^n$, {\normalfont \textbf{R}}$_{pp} = \mathbb{Z}_p$, ${\normalfont \textbf{C}}_{pp} = \mathbb{G}$ of order $p$.
+    \begin{itemize}
+        \item {\normalfont Setup}: \textbf{g} $= (g_1, \dots, g_n), h \leftarrow \mathbb{G}$
+        \item {\normalfont Com}$(\textbf{x} = (x_1, \dots, x_n); r) = (h^r \textbf{g}^{\textbf{x}})$
+    \end{itemize}
+\end{defn}
+
+The Pedersen vector commitment is \textcolor{blue}{perfectly hiding} and \textcolor{blue}{computationally binding} under the
+discrete logarithm assumption.
+
+\section{Zero-Knowledge Arguments of Knowledge}
+
+\subsection{Zero-Knowledge Arguments}
+
+A protocol in which a prover convinces a verifier that a statement
+is true \textit{without} revealing any information about why it holds is known as a Zero-knowledge argument. An argument is a proof only if the prover is computationally bounded and some computational hardness holds. Hereafter, we use the terms \textit{proof} and \textit{argument} interchangeably. 
+
+We illustrate the idea of zero-knowledge arguments of proof using the example of \textit{Ali-Baba's secret cave} \cite{jean89}. \footnote{Figure courtesy: \url{https://en.wikipedia.org/wiki/Zero-knowledge_proof}.}
+
+\begin{figure}[h!]
+    \centering
+    \begin{subfigure}[b]{0.8\textwidth}
+    \centering
+        \includegraphics[width=0.44\textwidth]{Figures/Zkip_alibaba1.png}
+        \label{fig:bc1}
+        \caption{Peggy chooses a path uniformly from $A, B$ without Victor knowing.}
+    \end{subfigure}
+    \\
+    \begin{subfigure}[b]{0.8\textwidth}
+    \centering
+        \includegraphics[width=0.4\textwidth]{Figures/Zkip_alibaba2.png}
+        \label{fig:bc2}
+        \caption{Victor asks her to come out of the cave from path $A$.}
+    \end{subfigure}
+    \\
+    \begin{subfigure}[b]{0.8\textwidth}
+    \centering
+        \includegraphics[width=0.4\textwidth]{Figures/Zkip_alibaba3.png}
+        \label{fig:bc3}
+        \caption{If Peggy had entered from path $A$, she returns trivially. Otherwise, she could open the door using the secret key and return from path $A$.}
+    \end{subfigure}
+    
+    \caption{Example of a zero knowledge proof}
+    \label{fig:zkp_alibaba}
+    \end{figure}
+    
+In the above example, Peggy knows the secret word used to open a mysterious door in a cave. The cave is shaped like a horse-hoe. The entrance is on one side and the magic door blocking the opposite side. Victor wants to know whether Peggy knows the secret word; but Peggy, does not want to reveal her knowledge (the secret word) to Victor or to reveal the fact of her knowledge to anyone in the world. 
+
+Peggy and Victor run the protocol described in figure \ref{fig:zkp_alibaba}. Provided she really does know the magic word, and the path she enters and path Victor asks her to come from are same, then it's trivial for Peggy to succeed and Victor to believe that she actually knows the secret key. Further, if the chosen path by Peggy and asked by Victor doesn't match, even then she could open the door and return from a desired path. If they were to repeat this protocol many times, say 15 times in a row, her chance of successfully "guessing" all of Victor's requests would become exponentially small (about three in a lakh).
+
+For zero-knowledge arguments presented in this report, we will consider arguments consisting of three interactive probabilistic polynomial time algorithms $(\text{Setup}, \mathcal{P}, \mathcal{V})$. These algorithms are described by:
+\begin{itemize}[label=$\ast$]
+    \item Setup: $\sigma \leftarrow \text{Setup}(1^{\lambda})$, $\sigma$ is common reference string
+    \item $\mathcal{P}$: prover, $\mathcal{V}$: verifier
+    \item Transcript $tr \leftarrow \langle \mathcal{P}, \mathcal{V} \rangle$
+    \item $\langle \mathcal{P}, \mathcal{V} \rangle = b$, $b=0$ if the verifier rejects or $b=1$ accepts 
+\end{itemize}
+
+Further, we define the relation $\mathcal{R}$ and the CRS-dependent language as:
+\begin{align*}
+    \mathcal{R} &:= \{ (\sigma, u, w) \in \{0,1\}^{\ast} \times  \{0,1\}^{\ast} \times  \{0,1\}^{\ast}: \ w \ \text{is a witness for}\ u \ | \ \sigma \}\\
+    \mathcal{L}_{\sigma} &:=  \{ x \ | \exists w \in (\sigma, u, w) \in \mathcal{R} \}
+\end{align*}
+
+So, $\mathcal{L}_{\sigma}$ is essentially the set of statements $x$ that have a witness $w$ in the relation $\mathcal{R}$. 
+
+\subsection{Defining Zero-Knowledge Arguments of Knowledge}
+\label{subsec:zka/d_aok}
+To mathematically define the notion of zero-knowledge and zero-knowledge arguments, we will provide the necessary definitions below.
+
+\begin{defn}[Argument of Knowledge]
+        The triple $(\text{Setup}, \mathcal{P}, \mathcal{V})$ is called an argument of knowledge for relation $\mathcal{R}$ if it is \textcolor{blue}{perfectly complete} and has \textcolor{blue}{computational witness-extended emulation}.
+\end{defn}
+
+\begin{defn}[Perfect completeness]
+    $(\text{Setup}, \mathcal{P}, \mathcal{V})$ has perfect completeness if for all non-uniform polynomial time adversaries $\mathcal{A}$
+
+    \begin{equation*}
+    \Pr 
+    \Big[
+    \begin{tabular}{c | l}
+         \multirow{2}{*}{$(\sigma, u, w) \not \in \mathcal{R} \ or \ 
+         \langle \mathcal{P}(\sigma, u, w), \mathcal{V}(\sigma, u) \rangle = 1$}
+         & $\sigma \leftarrow \text{Setup}(1^{\lambda})$
+         \\
+         & 
+         $(u, w) \leftarrow \mathcal{A}(\sigma)$
+    \end{tabular}
+    \Big] 
+    = 1
+\end{equation*}
+\end{defn}
+
+\emph{Perfect completeness} implies that if a statement is actually true, then an honest verifier is convinced with probability $1$ about the truth of the statement by an honest prover.
+
+\begin{defn}[Computational Witness-Extended Emulation]
+    $(\text{Setup}, \mathcal{P}, \mathcal{V})$ has witness-extended
+    emulation if for all deterministic polynomial time $P^{*}$ there exists an expected polynomial time
+    emulator $\mathcal{E}$ such that for all pairs of interactive adversaries $\mathcal{A}_1 , \mathcal{A}_2$ there exists a negligible function
+    $\mu (\lambda)$ such that
+    
+    \begin{multline*}
+    \Bigg|
+        \Pr
+        \Bigg[
+        \begin{tabular}{c | l}
+             \multirow{3}{*}{$\mathcal{A}_1(tr) = 1$}
+             & $\sigma \leftarrow \text{Setup}(1^{\lambda},)$
+             \\
+             & 
+             $(u, s) \leftarrow \mathcal{A}_2(\sigma),$
+             \\
+             & $tr \leftarrow \langle (\mathcal{P}^{*}(\sigma, u, s), V(u, s) \rangle$
+        \end{tabular}
+        \Bigg]
+        -\\
+        \Pr 
+        \Bigg[
+            \begin{tabular}{l | l}
+                \multirow{2}{*}{$\mathcal{A}_1(tr) = 1 \wedge$}
+                &
+                $\sigma \leftarrow \text{Setup}(1^{\lambda},)$
+                \\
+                & 
+                $(u, s) \leftarrow \mathcal{A}_2(\sigma),$
+                \\
+                $(tr\ accepted \implies (\sigma, u, w)\in \mathcal{R})$
+                &
+                $(tr, w) \leftarrow \mathcal{E}^{\mathcal{O}}(\sigma, u)$
+           \end{tabular}
+           \Bigg]
+    \Bigg|
+    \leq \mu(\lambda)
+    \end{multline*}
+    
+    where the oracle is given by  $\mathcal{O} = \langle (\mathcal{P}^{*}(\sigma, u, s), V(u, s) \rangle$, and permits rewinding to a specific point and
+    resuming with fresh randomness for the verifier from this point onwards. We can also define com-
+    putational witness-extended emulation by restricting to non-uniform polynomial time adversaries
+    $\mathcal{A}_1$ and $\mathcal{A}_2$.       
+    
+\end{defn}
+
+\textit{Computational witness-extended emulation} implies that when an adversary produces an argument to convince the verifier with some probability, then we have a corresponding emulator producing identically distributed argument with same probability, but also a witness.
+
+\begin{defn}[Public coin]
+    An argument of knowledge  $(\text{Setup}, \mathcal{P}, \mathcal{V})$ is called public coin if all messages sent from the verifier to the prover are chosen uniformly at random and independent of the prover's messages, i.e., the challenges correspond to the verifier's randomness $\rho$.
+\end{defn}
+
+\begin{defn}[Zero Knowledge Argument of Knowledge]
+    An argument of knowledge $(\text{Setup}, \mathcal{P}, \mathcal{V})$ is zero knowledge if it reveals no information about $w$ apart from what could be deduced from the fact that $(\sigma, u, w) \in \mathcal{R}$.
+\end{defn}
+
+An argument of knowledge is zero knowledge if it does not leak information about $w$ apart from what can be deduced from the fact that $(\sigma, u, w) \in \mathcal{R}$. More explicitly, we note that, a zero knowledge argument of knowledge ensures that no \textsf{PPT} adversary (or verifier) can ever recover $w$ given it's relation with $\sigma, u$.
+
+\begin{defn}[Perfect Special Honest-Verifier Zero-Knowledge]
+    A public coin argument of knowledge $(\text{Setup}, \mathcal{P}, \mathcal{V})$ is a perfect special honest verifier zero knowledge (SHVZK) argument of knowledge for $\mathcal{R}$ if there exists a probabilistic polynomial time simulator $\mathcal{S}$ such that for all pairs of interactive adversaries $\mathcal{A}_1 , \mathcal{A}_2$
+    
+    \begin{multline*}
+    \Pr
+    \Bigg[
+    \begin{tabular}{c | l}
+        \multirow{3}{*}{$(\sigma, u, w) \in \mathcal{R} \wedge \mathcal{A}_1(tr) = 1$}
+         & $\sigma \leftarrow \text{Setup}(1^{\lambda},)$
+         \\
+         & 
+         $(u, w, \rho) \leftarrow \mathcal{A}_2(\sigma),$
+         \\
+         & $tr \leftarrow \langle (\mathcal{P}(\sigma, u, s), V(\sigma, u; \rho) \rangle$
+    \end{tabular}
+    \Bigg]
+    \\
+    =\Pr
+    \Bigg[
+    \begin{tabular}{c | l}
+        \multirow{3}{*}{$(\sigma, u, w) \in \mathcal{R} \wedge \mathcal{A}_1(tr) = 1$}
+         & $\sigma \leftarrow \text{Setup}(1^{\lambda},)$
+         \\
+         & 
+         $(u, w, \rho) \leftarrow \mathcal{A}_2(\sigma),$
+         \\
+         & $tr \leftarrow \mathcal{S}(u, \rho)$
+    \end{tabular}
+    \Bigg]
+    \end{multline*}
+
+\end{defn}
+
+PSHVZK AoK implies that even if an adversary chooses a
+distribution over statements and witnesses, it isn't able to
+distinguish between simulated transcript and honestly generated
+transcript for $u \in \mathcal{L}_{\sigma}$.
+
+
+

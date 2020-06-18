@@ -1,0 +1,323 @@
+%%% Time-stamp: <mainrep.tex 19:57, 17 Jul 2016 by P Sunthar>
+%%% $Log:$
+% This document describes how to use iitbreport style
+%********************************************************************
+
+%\documentclass[11pt,a4paper,openright]{report}
+\documentclass[twoside]{iitbreport}
+
+%% Default spacing: 1.5
+%% Default font size: 12pt
+%% Default font: cmr
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%% Prelims from RevelioBP paper
+
+% \usepackage{cite}
+% \usepackage{amsmath,amssymb,amsfonts}
+\usepackage{algorithmic}
+% \usepackage{graphicx}
+% \usepackage{textcomp}
+% \usepackage{bmpsize}
+% \usepackage[dvipsnames]{xcolor}
+% \usepackage{lipsum}
+\usepackage{longtable}
+\usepackage{cryptocode}
+\usepackage{framed}
+\usepackage{fancybox}
+\usepackage{array}
+\usepackage{mdframed}
+\usepackage{enumitem}
+% \usepackage{nameref}
+\usepackage{upgreek}
+% \usepackage{cases}
+\usepackage{multirow}
+% \usepackage{mathrsfs}
+% \usepackage{dutchcal}
+% \usepackage{eufrak}
+% \usepackage{bbm}
+% \usepackage[T1]{fontenc}
+% \usepackage[utf8]{inputenc}
+% \usepackage{tgadventor}
+\usepackage[symbol]{footmisc}
+\usepackage{subcaption}
+
+
+\usepackage{pgfplots}
+\pgfplotsset{width=1.32\textwidth,compat=1.9}
+\usetikzlibrary{spy}
+
+% \usepackage[colorlinks=true,urlcolor=black]{hyperref}
+
+\newtheorem{theorem}{Theorem}
+\newtheorem{lemma}{Lemma}
+\newtheorem{corollary}{Corollary}
+\newtheorem{definition}{Definition}
+
+\def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
+    T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
+
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%% Selectively comment out sections that you want to be left out but
+%% maintaining the page numbers and other \ref
+\includeonly{%
+  intro/introduction,
+  prelims/crypto_prelims,
+  lit/literature,
+  expt/experimental,
+  rnd/results, 
+  dec,abs,pub,ack
+}
+
+%%% Some commonly used packages (make sure your LaTeX installation
+%%% contains these packages, if not ask your senior to help installing
+%%% the packages)
+
+\usepackage{booktabs}
+\graphicspath{{expt/}}
+
+%%% Multibib package to be used for listing own publications.
+\usepackage[resetlabels]{multibib}
+\newcites{Pub}{List of Publications}
+
+
+%%% Macro definitions for Commonly used symbols
+\newcommand{\Rey}{\ensuremath{\mathrm{Re}}}
+\newcommand{\avg}[1]{\ensuremath{\overline{#1}}}
+\newcommand{\tenpow}[1]{\ensuremath{\times 10^{#1}}}
+\newcommand{\pder}[2]{\ensuremath{\frac{\partial#1}{\partial#2}}}
+
+% new \oset macro
+\makeatletter
+\newcommand{\oset}[3][0ex]{%
+  \mathrel{\mathop{#3}\limits^{
+    \vbox to#1{\kern-2\ex@
+    \hbox{$\scriptstyle#2$}\vss}}}}
+\makeatother
+
+\newcounter{mylabelcounter}
+
+\makeatletter
+\newcommand{\labelText}[2]{%
+#1\refstepcounter{mylabelcounter}%
+\immediate\write\@auxout{%
+  \string\newlabel{#2}{{1}{\thepage}{{\unexpanded{#1}}}{mylabelcounter.\number\value{mylabelcounter}}{}}%
+}%
+}
+\makeatother
+
+\newcommand{\vecb}[1]{\oset[-0.4ex]{\rightharpoonup}{\textbf{#1}}}
+\newcommand{\vecnb}[1]{{\boldsymbol{#1}}}
+\newcommand{\rgen}{\oset[1pt]{\hspace{3mm}\$}{\leftarrow}}
+
+
+\newcommand{\Plus}{\raisebox{.20ex}{\normalsize\bf +}}
+\newcommand{\plus}{\raisebox{.24ex}{\footnotesize +}}
+\newcommand{\ToDo}[1]{[\textcolor{blue}{ToDo}: #1]}
+\newcommand{\Rplus}{\RBw}
+\newcommand{\RPlus}{\RB}
+\newcommand{\proto}{$\Uppi_{\RBmath}$ }
+\newcommand{\protow}{$\Uppi_{\RBmath}$}
+% \newcommand{\Iproto}{$\Uppi_{\RBmath}^{I}$ }
+% \newcommand{\Iprotow}{$\Uppi_{\RBmath}^{I}$}
+
+\newcommand{\lang}{$\L_{\RBmath}$ }
+% \newcommand{\Ilang}{$\L_{\RBmath}^I$ }
+\newcommand{\langw}{$\L_{\RBmath}$}
+% \newcommand{\Ilangw}{$\L_{\RBmath}^I$}
+
+\newcommand{\R}{\textnormal{{\small \fontfamily{qag}\selectfont Revelio}} }
+\newcommand{\RB}{\textnormal{{\small \fontfamily{qag}\selectfont RevelioBP}} }
+\newcommand{\RBmath}{\textnormal{{\scriptsize \fontfamily{qag}\selectfont RevBP}} }
+\newcommand{\Rw}{\textnormal{{\small \fontfamily{qag}\selectfont Revelio}}}
+\newcommand{\RBw}{\textnormal{{\small \fontfamily{qag}\selectfont RevelioBP}}}
+ 
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\E}{\mathscr{E}}
+\newcommand{\Emat}{\mathbcal{E}}
+\newcommand{\lvec}{\mathbcal{l}}
+\newcommand{\rvec}{\mathbcal{r}}
+\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\G}{\mathbb{G}}
+\renewcommand{\P}{\mathcal{P}}
+\newcommand{\V}{\mathcal{V}}
+\newcommand{\C}{\mathcal{C}}
+\renewcommand{\L}{\mathcal{L}}
+\newcommand{\D}{\mathcal{D}}
+
+\newcommand{\qed}{$\blacksquare$}
+
+\newcommand{\protocolStart}{\begin{itemize}[leftmargin=*]}
+\newcommand{\protocolEnd}{\end{itemize}}
+
+\setlist[itemize]{leftmargin=0mm}
+\setlist[enumerate]{leftmargin=1cm}
+
+\newcommand{\pointsStart}{\begin{itemize}[leftmargin=*]}
+\newcommand{\pointsEnd}{\end{itemize}}
+
+\renewcommand{\thefootnote}{\fnsymbol{footnote}}
+\colorlet{lightblue}{Blue!40}
+
+
+\newtheorem{defn}{Definition}[section]
+
+
+% Referencing macros
+\newcommand{\Eqref}[1]{Equation~\eqref{#1}}
+\newcommand{\Tabref}[1]{Table~\ref{#1}}
+\newcommand{\Figref}[1]{Figure~\ref{#1}}
+\newcommand{\Appref}[1]{Appendix~\ref{#1}}
+
+
+\begin{document}
+	
+%%********************************Frontmatter***********************
+% In frontmatter everything comes with roman numbering	
+\pagenumbering{roman}
+\setcounter{page}{1}
+
+%*******************************************************************
+%                         Title Page                            
+%*******************************************************************
+\title{Shorter, Privacy-Preserving Proof of Reserves Protocols for Cryptocurrency Exchanges}
+\author{Suyash Bagad}
+
+%% Print the date. Today's date comes by default, change it here to 
+%% other date format, if required:
+
+%\date{\today}
+%\date{10 Mar 2016}
+
+
+%% The type of the report can be set here
+
+\reporttype{A Seminar Report}
+%\reporttype{A Thesis}
+%\reporttype{A Dissertation}
+%\reporttype{A Project Report}
+
+%% Name of the degree
+\degree{Dual Degree (B.Tech \& M.Tech) in Electrical Engineering with Specialization in Communication \& Signal Processing}
+%\degree{Master of Technology}
+
+
+%% Department/Centre Name
+\dept{Department of Electrical Engineering}
+
+%% Supervisor and cosupervisor/excosupervisor are not essential parts
+%% of a report title page, as it is your report!
+
+%% But if you **have** to put it uncomment these
+\supervisor{Prof. Saravanan Vijayakumaran}
+%\cosupervisor{Co-super name}
+% \excosupervisor{External Supervisor}
+
+%% Roll number
+\rollnum{Roll No. 15D070007}
+
+\maketitle
+
+%*******************************************************************
+%                         Copyright Page                          
+%******************************************************************* 
+%\mycopyright                    
+
+%*******************************************************************
+%                         Dedication Page                         
+%*******************************************************************
+\dedication[Dedicated to \ldots]        
+%\addintoc{Dedication}
+
+%*******************************************************************
+%                        Certificate Page                         
+%*******************************************************************
+%\makecertificate[change title name]{report type} 
+% \makecertificate{seminar report} 
+%\makecertificate{thesis}
+\makecertificate{dissertation}
+%\makecertificate{project report}
+
+%\addintoc{Certificate}
+
+%*******************************************************************
+%                         Approval Sheet                         
+%*******************************************************************
+%\makeapproval{thesis}
+%\makeapproval{dissertation}
+
+%*******************************************************************
+%                          Declaration                           
+%*******************************************************************
+\include{dec} 
+%\addintoc{Declaration}
+
+%******************************************************************
+%                          Abstract                             
+%******************************************************************  
+\include{abs}                    
+
+%******************************************************************
+%                         Contents list                         
+%******************************************************************
+%\figurespagefalse
+%\tablespagefalse
+\makecontents % Creats toc, lof, and lot
+
+%******************************************************************
+%                        Notations                              
+%******************************************************************
+\notations[4cm]{List of Symbols}      
+
+%%********************************Mainmatter***********************
+% In mainmatter everything comes with arabic numbering	
+\cleardoublepage
+\setcounter{page}{1}
+\pagenumbering{arabic}
+
+%******************************************************************
+%                         Chapters                           
+%****************************************************************** 
+\include{intro/introduction}
+\include{prelims/crypto_prelims}
+\include{lit/literature}
+\include{expt/experimental}
+\include{rnd/results}
+
+%****************************************************************
+%                         Appendices                           
+%****************************************************************
+%% Additional, supporting material, such as codes, derivations, etc., can be placed in the appendix
+\appendix
+\chapter{Supporting Material}
+
+%******************************************************************
+%                         Bibliography or References          
+%******************************************************************  
+\bibliography{mylit}
+
+%*******************************************************************
+%                         List of publications               
+%******************************************************************
+\include{pub}            
+
+%*******************************************************************
+%                        Acknowledgements                    
+%******************************************************************* 
+\include{ack}           
+
+
+% GAME OVER
+%*******************************************************************
+\end{document}
+
+%%% Local Variables: 
+%%% mode: latex
+%%% TeX-master: t
+%%% End: 
