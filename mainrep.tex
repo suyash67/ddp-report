@@ -40,12 +40,16 @@
 % \usepackage[utf8]{inputenc}
 % \usepackage{tgadventor}
 \usepackage[symbol]{footmisc}
-\usepackage{subcaption}
+\usepackage{caption,subcaption}
+% \usepackage{subfigure}
 
 
 \usepackage{pgfplots}
-\pgfplotsset{width=1.32\textwidth,compat=1.9}
+\pgfplotsset{compat=1.9}
 \usetikzlibrary{spy}
+\usetikzlibrary{external}
+\usepgfplotslibrary{groupplots}
+\tikzexternalize[prefix=plots/]
 
 % \usepackage[colorlinks=true,urlcolor=black]{hyperref}
 
@@ -124,13 +128,9 @@
 \newcommand{\RPlus}{\RB}
 \newcommand{\proto}{$\Uppi_{\RBmath}$ }
 \newcommand{\protow}{$\Uppi_{\RBmath}$}
-% \newcommand{\Iproto}{$\Uppi_{\RBmath}^{I}$ }
-% \newcommand{\Iprotow}{$\Uppi_{\RBmath}^{I}$}
 
 \newcommand{\lang}{$\L_{\RBmath}$ }
-% \newcommand{\Ilang}{$\L_{\RBmath}^I$ }
 \newcommand{\langw}{$\L_{\RBmath}$}
-% \newcommand{\Ilangw}{$\L_{\RBmath}^I$}
 
 \newcommand{\R}{\textnormal{{\small \fontfamily{qag}\selectfont Revelio}} }
 \newcommand{\RB}{\textnormal{{\small \fontfamily{qag}\selectfont RevelioBP}} }
@@ -139,12 +139,15 @@
 \newcommand{\RBw}{\textnormal{{\small \fontfamily{qag}\selectfont RevelioBP}}}
  
 \newcommand{\N}{\mathbb{N}}
+\newcommand{\F}{\mathbb{F}}
 \newcommand{\E}{\mathscr{E}}
+\newcommand{\Inf}{\mathcal{O}}
 \newcommand{\Emat}{\mathbcal{E}}
 \newcommand{\lvec}{\mathbcal{l}}
 \newcommand{\rvec}{\mathbcal{r}}
 \newcommand{\Z}{\mathbb{Z}}
 \newcommand{\G}{\mathbb{G}}
+\newcommand{\Rn}{\mathbb{R}}
 \renewcommand{\P}{\mathcal{P}}
 \newcommand{\V}{\mathcal{V}}
 \newcommand{\C}{\mathcal{C}}

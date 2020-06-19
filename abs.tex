@@ -30,15 +30,25 @@ The main challenge in design of proofs of reserves is to preserve privacy and co
 Regaining \textit{trust} of the customers without compromising exchanges' \textit{privacy} is the primary motivation behind the design of better proofs of reserves. 
 Advanced cryptographic techniques make it possible to design proofs of reserves which reveal \textit{nothing} beyond an assertation of the form:
 \begin{center}
-    \texttt{Exchange ABC owns ? amount of Y cryptocurrency and here is a proof $\Pi$ for customers to verify.}
+    \textit{Exchange X owns ? amount of the cryptocurrency Y.}
 \end{center}
 Note that here we do not intend to reveal even the total amount. 
-The proof $\Pi$ is a cryptographic tool known as a \textit{Non-Interactive Zero-Knowledge} proof.
+A publicly verifiable proof backing up such a claim is a cryptographic tool known as a \textit{Non-Interactive Zero-Knowledge} proof.
 
 In this work, we study the existing proof of reserves protocols for privacy-centric cryptocurrencies Grin, Beam and Monero.
 The existing proof of reserves protocols possess some shortcomings which becomes a hurdle in their practical deployment.
 With an aim to alleviate limitations of previously designed proofs of reserves, we design novel proofs of reserves for crypto exchanges supporting the above cryptocurrencies.
 Our protocols are shorter and privacy enhancing in comparison to the existing state-of-the-art proofs of reserves.
+Previous state-of-the-art proofs of reserves protocols provided some privacy to exchanges by hiding the exchange-owned addresses (or outputs) in a larger anonymity set. 
+The proof sizes for these protocols scaled linearly with the anonymity set size.
+Since the level of privacy in a proof of reserves directly depends on how large the size of the anonymity set size is as compared to the number of exchange-owned addresses, larger anonymity sets imply stronger privacy.
+However, as the previous protocols proof sizes grew linearly as the anonymity set grows, it bought practical limitations (with regards to that of proof storage and broadcast) on what level of privacy could be attained.  
+With an aim to improve scalability of the previously design proof of reserves protocols, we design a strategy based on Bulletproofs technique \cite{Bunz2018} to design proofs of reserves scaling logarithmically in the anonymity set.
+This brings flexibility in the choice of the size of anonymity set and therefore enhances the attainable level of privacy.
+Along with this, we also use the concept of \textit{key images} to ensure that different exchanges cannot share their addresses.
+The key images subsequently also helps in detecting double-spending of addresses by an exchange.
+Going a step further, we also devise a cryptographic technique to enforce different exchanges to publish proofs of reserves corresponding to a same blockchain state, which is absent in previous work.
+This ensures that exchanges can publish proofs of reserves only at particular time instances (for example, after each block is mined), preventing them from cheating customers with ambiguous choices of anonymity sets.   
 We also implement the protocols we design as well as the previous state-of-the-art protocols for comparison and show feasibility in practical deployment of our protocols.
 We believe that our work on proof of reserves could be well adopted by crypto exchanges and benefit several of their customers.
 Furthermore, our work also opens up avenues of exploration of establishing trust without compromising privacy or anonymity in a more general setting.

@@ -90,6 +90,7 @@
 \RequirePackage{amsmath, amsfonts, amssymb}
 \RequirePackage[dvipsnames]{xcolor}
 \RequirePackage{fancyhdr}
+\RequirePackage{etex}
 
 \RequirePackage[bookmarks,%
             breaklinks,%
