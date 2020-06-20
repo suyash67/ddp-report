@@ -225,6 +225,7 @@ The division by a non-zero field element $x \in F$ is interpreted as multiplicat
 Similarly, subtraction of a field element $x \in F$ is interpreted as addition by its additive inverse $-x$.
 This is the basis of the elliptic curve cryptography used in modern day systems except that of 
 For example, Bitcoin and Grin cryptocurrency systems use the prime-ordered elliptic curve \texttt{secp256k1} \cite{Hess2000}.
+
 Note that from hereon we use multiplicative notation to denote group operation on elliptic curves $\G$ on finite fields $\F_q$ for a large prime $q$. 
 Lastly, addition of a point $P \in \G$ for $k$ times is shown as scalar multiplication in additive notation and exponentiation in multiplicative respectively.
 \begin{equation*}
@@ -370,21 +371,21 @@ We illustrate the idea of zero-knowledge arguments of proof using the example of
     \begin{subfigure}[b]{0.8\textwidth}
     \centering
         \includegraphics[width=0.44\textwidth]{Figures/Zkip_alibaba1.png}
-        \label{fig:bc1}
+        \label{fig:zkp1}
         \caption{Peggy chooses a path uniformly from $A, B$ without Victor knowing.}
     \end{subfigure}
     \\
     \begin{subfigure}[b]{0.8\textwidth}
     \centering
         \includegraphics[width=0.4\textwidth]{Figures/Zkip_alibaba2.png}
-        \label{fig:bc2}
+        \label{fig:zkp2}
         \caption{Victor asks her to come out of the cave from path $A$.}
     \end{subfigure}
     \\
     \begin{subfigure}[b]{0.8\textwidth}
     \centering
         \includegraphics[width=0.4\textwidth]{Figures/Zkip_alibaba3.png}
-        \label{fig:bc3}
+        \label{fig:zkp3}
         \caption{If Peggy had entered from path $A$, she returns trivially. Otherwise, she could open the door using the secret key and return from path $A$.}
     \end{subfigure}
     
