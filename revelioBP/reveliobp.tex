@@ -775,12 +775,13 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   %%%%%%%%%%%%%%%%%%%%%%%%
   % Plots
   %%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}
+\begin{figure}[h!]
   \centering
   \begin{subfigure}[b]{0.49\textwidth}
     \caption{\small Proof size in KB for $s=20$}
     \label{subfig:revBP1}
-    \tikzexternaldisable
+    % \tikzexternaldisable
+    \tikzsetnextfilename{revBP1}
     \begin{tikzpicture}
       \begin{axis}[
           width=1.1\linewidth,
@@ -855,7 +856,8 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   \begin{subfigure}[b]{0.49\textwidth}
     \caption{\small Proof size in KB for $n=10^3$}
     \label{subfig:revBP2}
-    \tikzexternaldisable
+    % \tikzexternaldisable
+    \tikzsetnextfilename{revBP2}
     \begin{tikzpicture}
       \begin{axis}[
           width=1.1\linewidth,
@@ -920,7 +922,8 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   \begin{subfigure}[b]{0.49\textwidth}
     \caption{\small Running times in min, $s=20$}
     \label{subfig:revBP3}
-    \tikzexternaldisable
+    % \tikzexternaldisable
+    \tikzsetnextfilename{revBP3}
     \begin{tikzpicture}[spy using outlines=
       {rectangle, magnification=3.5, size=1cm, connect spies}]
       \begin{axis}[
@@ -1048,7 +1051,8 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   \begin{subfigure}[b]{0.49\textwidth}
     \caption{\small Running times in min, $n=10^3$}
     \label{subfig:revBP4}
-    \tikzexternaldisable
+    % \tikzexternaldisable
+    \tikzsetnextfilename{revBP4}
     \begin{tikzpicture}
       \begin{axis}[
           width = 1.1\textwidth,
