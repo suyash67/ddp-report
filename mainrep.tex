@@ -15,7 +15,10 @@
 
 % \usepackage{cite}
 % \usepackage{amsmath,amssymb,amsfonts}
-\usepackage{algorithmic}
+% \usepackage{algorithmic}
+\usepackage{algorithm} 
+\usepackage[noend]{algpseudocode} 
+\usepackage[export]{adjustbox}
 % \usepackage{graphicx}
 \usepackage{textcomp}
 \usepackage{bmpsize}
@@ -34,7 +37,7 @@
 \usepackage{multirow}
 \usepackage{mathrsfs}
 \usepackage{dutchcal}
-\usepackage{eufrak}
+% \usepackage{eufrak}
 \usepackage{bbm}
 % \usepackage[T1]{fontenc}
 % \usepackage[utf8]{inputenc}
@@ -58,6 +61,12 @@
 \newtheorem{corollary}{Corollary}
 \newtheorem{definition}{Definition}
 
+\usepackage{chngcntr}
+\counterwithin{theorem}{chapter}
+\counterwithin{definition}{chapter}
+\counterwithin{lemma}{chapter}
+% \counterwithin{corollary}{chapter}
+
 \def\BibTeX{{\rm B\kern-.05em{\sc i\kern-.025em b}\kern-.08em
     T\kern-.1667em\lower.7ex\hbox{E}\kern-.125emX}}
 
@@ -74,10 +83,11 @@
   intro/introduction,
   prelims/crypto_prelims,
   revelioBP/reveliobp,
+  grin-ub/grin_ub,
   lit/literature,
   expt/experimental,
   rnd/results, 
-  dec,abs,pub,ack
+  dec,abs,pub,ack,appendix
 }
 
 %%% Some commonly used packages (make sure your LaTeX installation
@@ -116,6 +126,13 @@
 }%
 }
 \makeatother
+
+\newcommand\blfootnote[1]{%
+  \begingroup
+  \renewcommand\thefootnote{}\footnote{#1}%
+  \addtocounter{footnote}{-1}%
+  \endgroup
+}
 
 \newcommand{\vecb}[1]{\oset[-0.4ex]{\rightharpoonup}{\textbf{#1}}}
 \newcommand{\vecnb}[1]{{\boldsymbol{#1}}}
@@ -291,6 +308,7 @@
 \include{intro/introduction}
 \include{prelims/crypto_prelims}
 \include{revelioBP/reveliobp}
+\include{grin-ub/grin_ub}
 \include{lit/literature}
 \include{expt/experimental}
 \include{rnd/results}
@@ -299,8 +317,7 @@
 %                         Appendices                           
 %****************************************************************
 %% Additional, supporting material, such as codes, derivations, etc., can be placed in the appendix
-\appendix
-\chapter{Supporting Material}
+\include{appendix}
 
 %******************************************************************
 %                         Bibliography or References          

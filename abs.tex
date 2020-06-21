@@ -1,58 +1,41 @@
 %============================= abs.tex================================
 \begin{Abstract}
-The rise of cryptocurrencies began with the inception of Bitcoin in 2009. Since
-then, several cryptocurrencies with better privacy and security guarantees are being
-developed. Cryptocurrencies gained popularity among general masses with the establishment of cryptocurrency exchanges.
-Also known as digital currency exchanges or crypto exchanges, they are essentially businesses that allow customers to trade
-cryptocurrencies or digital currencies for other assets including conventional fiat
-money or different digital currencies. 
-From a customer point of view, exchanges not only made owning cryptocurrencies possible to non-miners but also provided them with fast trading platforms for transactions within cryptocurrencies and fiat.
-Customers were also provided with custodial wallets freeing them from the hassle of storing and remembering private keys.
-In the early days of cryptocurrency, crypto exchanges were very few and less-known, but not too long ago their number increased dramatically and they became an integral part of the cryptoeconomic ecosystem. 
-They were responsible for the boost in the transaction volumes of the vast majority of the cryptocurrency sales and liquidity.
 
-The downside of such cryptocurrency exchanges is that they are required to
-store sensitive information of customers like the private keys and account balances.
-If in case an exchange is hacked, it might result in loss of customer-owned cryptocurrency assets.
-There have been many high-profile hacks over the years, many of which went unnoticed for some time \cite{Cryptohacks}.
-Although having a fool-proof method to avoid such hacks might be a difficult task, proof of reserves is one way to uphold the trust of customers.
-A proof of reserves is the guarantee by the exchange that it owns reserves at least as much as its total liabilities towards customers. 
-In this way, even after cases of hacking, the exchange could repay its liabilities to the customers.
-
-The simplest way to publish a proof of reserves for an exchange is to reveal all the addresses or account details it owns so that the customers are convinced about the assets owned by the exchange.
-Another way could be to send all the reserves it owns from all its addresses to a single addresses it owns.
-If amounts involved in a transaction are public as in the case of Bitcoin, such a self-transaction would be a proof of the exchange's reserves.
-For example, in 2011, Mt.~Gox cryptocurrency exchange transferred 424,242 bitcoins from its wallets to a previously revealed Bitcoin address \cite{MtGoxWikipedia}.
-However, such proofs of reserves do not preserve the privacy of the exchanges. 
-Information of an exchange's addresses or accounts and the total assets it owns are crucial for aspects of its business.
-Exchanges naturally would not be in a position to compromise such critical information as a part of proofs of reserves.
-The main challenge in design of proofs of reserves is to preserve privacy and confidentiality of exchanges but at the same time convince customers about an exchange's actual asset ownership.
-Regaining \textit{trust} of the customers without compromising exchanges' \textit{privacy} is the primary motivation behind the design of better proofs of reserves. 
-Advanced cryptographic techniques make it possible to design proofs of reserves which reveal \textit{nothing} beyond an assertation of the form:
-\begin{center}
-    \textit{Exchange X owns ? amount of the cryptocurrency Y.}
-\end{center}
-Note that here we do not intend to reveal even the total amount. 
-A publicly verifiable proof backing up such a claim is a cryptographic tool known as a \textit{Non-Interactive Zero-Knowledge} proof.
+The source of new cryptocurrencies is via the mining rewards for mining new blocks on the blockchain.
+Cryptocurrency exchanges enable customers to buy digital assets without mining them in exchange for fiat currencies.
+They also provide customers with custodial wallets for trading purposes. 
+The convenience provided by such exchanges sometimes causes loss of customers assets in cases of hacks and frauds.
+From the customer point of view, it is expected that the exchanges pay for the lost assets in unfortunate cases of exchanges being hacked.
+Proof of Solvency is a technique to prove that an exchange owns assets at least as much as its liabilities.
+If exchanges regularly publish proofs of solvency, they can regain the trust of their customers.
+A proof of solvency comprises of a proof of reserves and a proof of liabilities.
+Our work focuses only on designing privacy-preserving proof of reserves protocols for cryptocurrency exchanges as it depends only on publicly available data from the blockchain as against private customer data in the latter.
 
 In this work, we study the existing proof of reserves protocols for privacy-centric cryptocurrencies Grin, Beam and Monero.
 The existing proof of reserves protocols possess some shortcomings which becomes a hurdle in their practical deployment.
-With an aim to alleviate limitations of previously designed proofs of reserves, we design novel proofs of reserves for crypto exchanges supporting the above cryptocurrencies.
-Our protocols are shorter and privacy enhancing in comparison to the existing state-of-the-art proofs of reserves.
-Previous state-of-the-art proofs of reserves protocols provided some privacy to exchanges by hiding the exchange-owned addresses (or outputs) in a larger anonymity set. 
-The proof sizes for these protocols scaled linearly with the anonymity set size.
-Since the level of privacy in a proof of reserves directly depends on how large the size of the anonymity set size is as compared to the number of exchange-owned addresses, larger anonymity sets imply stronger privacy.
-However, as the previous protocols proof sizes grew linearly as the anonymity set grows, it bought practical limitations (with regards to that of proof storage and broadcast) on what level of privacy could be attained.  
+With an aim to alleviate limitations of previously designed proofs of reserves, we design novel proofs of reserves for MimbleWimble-based cryptocurrencies.
+Our protocol is shorter and privacy enhancing in comparison to the existing state-of-the-art proof of reserves protocols.
+Previous state-of-the-art proof of reserves protocol provided some privacy to exchanges by hiding the exchange-owned outputs in a larger anonymity set. 
+The proof sizes for this protocol scaled linearly with the anonymity set size.
+Since the level of privacy in a proof of reserves directly depends on how large the size of the anonymity set size is as compared to the number of exchange-owned outputs, larger anonymity sets imply stronger privacy.
+However, linear dependence of the proof sizes on the anonymity set bought practical limitations (with regards to that of proof storage and broadcast) on the level of privacy that could be attained.  
 With an aim to improve scalability of the previously design proof of reserves protocols, we design a strategy based on Bulletproofs technique \cite{Bunz2018} to design proofs of reserves scaling logarithmically in the anonymity set.
 This brings flexibility in the choice of the size of anonymity set and therefore enhances the attainable level of privacy.
 Along with this, we also use the concept of \textit{key images} to ensure that different exchanges cannot share their addresses.
 The key images subsequently also helps in detecting double-spending of addresses by an exchange.
 Going a step further, we also devise a cryptographic technique to enforce different exchanges to publish proofs of reserves corresponding to a same blockchain state, which is absent in previous work.
 This ensures that exchanges can publish proofs of reserves only at particular time instances (for example, after each block is mined), preventing them from cheating customers with ambiguous choices of anonymity sets.   
-We also implement the protocols we design as well as the previous state-of-the-art protocols for comparison and show feasibility in practical deployment of our protocols.
-We believe that our work on proof of reserves could be well adopted by crypto exchanges and benefit several of their customers.
+We also implement the protocol we design and demonstrate feasibility in practical deployment of our protocol.
+We believe that our work on proof of reserves could well be adopted by crypto exchanges and benefit several of their customers.
+Our technique can be generalized for other privacy-focussed cryptocurrencies like Monero.
+% We are currently working on extending this to Monero and give a brief description of the same in Appendix.
 Furthermore, our work also opens up avenues of exploration of establishing trust without compromising privacy or anonymity in a more general setting.
-We are hopeful that this work acts as a small but crucial contribution towards the goal of establishing a \textit{trustless, decentralized economy.}
+% We are hopeful that this work acts as a small but crucial contribution towards the goal of establishing a \textit{trustless, decentralized economy.}
+
+Pedersen commitments are perfectly hiding, i.e. no adversary, irrespective of the computational power he possesses, can find the amount hidden in a Pedersen commitment.
+Amounts in Grin are hidden in outputs which are Pedersen commitments.
+In this work, we also parallely explore if the transaction structure in Grin reveals any information about the amounts hidden in the outputs.
+
 %
 %
 %

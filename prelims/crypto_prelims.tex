@@ -103,7 +103,7 @@ Simple calculation shows that given $P = (x_1,y_1), Q = (x_2, y_2)$ and $x_1 \ne
     \label{eqn:point_add}
 \end{equation}
 
-\begin{figure}
+\begin{figure}[h!]
     \begin{center}
         \tikzsetnextfilename{point_add1}
         \begin{tikzpicture}
@@ -163,7 +163,7 @@ Simple calculation shows that given $P = (x_1,y_1), Q = (x_2, y_2)$ and $x_1 \ne
         \node[text width=4cm,align=center,anchor=north] at ([yshift=2mm]point_add c1r1.south) {\captionof*{subfigure}{(a) $x_1 \neq x_2$\label{subfig:ecc1}}};
         \node[text width=4cm,align=center,anchor=north] at ([yshift=2mm]point_add c2r1.south) {\captionof*{subfigure}{(b) $x_1 = x_2, y_1 = -y_2$\label{subfig:ecc2}}};
         \end{tikzpicture}
-
+        
         \tikzsetnextfilename{point_add2}
         \begin{tikzpicture}
             \begin{axis}[
@@ -205,7 +205,7 @@ Now if $P$ and $Q$ are such that $x_1 = x_2$ but $y_1 = -y_2$, the line passing 
 In this case, we define the point addition operation as $P + Q = \Inf$.
 Therefore, the special point $\Inf$ acts as an identity point in the group $E \cup \{\Inf\}$.
 Further, if we have $P=Q$, i.e. $x_1 = x_2, y_1 = y_2 \neq 0$, we draw tangent to the curve at point $P$.
-As the degree of the curve is 3, any tangent will intersect the curve at only and only one point, say point $R^{\prime}$.
+As the degree of the curve is 3, any tangent will intersect the curve at one and only one point, say point $R^{\prime}$.
 The result $R$ in this case is again the mirror reflection of point $R^{\prime}$ about the x-axis. 
 The addition of a point to itself is known as \textit{point doubling}. 
 The explicit formula for point doubling of point $P=(x_1,y_1)$ can be written as $P+P = 2P = (x_2, y_2)$ such that
@@ -239,7 +239,7 @@ Similarly, in multiplicative notation, such an operation is called as exponentia
 \section{Cryptographic Assumptions}
 \label{scn:assumptions}
 
-Each practical cryptographic systems is built on certain hardness assumptions.
+Every practical cryptographic system is built on certain hardness assumptions.
 For example, the widely popular RSA digital signature algorithm was based on the assumption that it computationally hard to factorize big primes \cite{RSA1978}.  
 Elliptic curve cryptography is similarly based on the assumption that the \textit{Discrete Log Problem} is difficult to be solved by a computationally bounded adversary.
 
@@ -358,6 +358,12 @@ discrete logarithm assumption. This means that no matter how much computational 
 Further, for a computationally bounded adversary, it is infeasible to find another opening to a Pedersen commitment once he has committed it to original message.
 
 \section{Zero-Knowledge Arguments of Knowledge}
+
+Zero knowledge proofs are a powerful cryptographic tool which allow a prover to prove the validity of an assertion without revealing any other information about the secret owned.
+We give the formal definitions of zero knowledge proofs and their properties along with an example.
+In a formal context, a \textit{proof} implies security guarantees against any adversary while security of an \textit{argument} stands valid only for a computationally bounded adversary.  
+From hereon, we will interchangeably use the terms \textit{proof} and \textit{argument} as we consider only \textsf{PPT} adversaries.
+
 
 \subsection{Zero-Knowledge Arguments}
 
