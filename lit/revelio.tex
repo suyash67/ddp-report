@@ -1,0 +1,95 @@
+\section{\textnormal{{\fontfamily{qag}\selectfont Revelio}} - A MimbleWimble Proof of Reserves Protocol}
+\label{scn:revelio}
+
+\R \cite{Dutta2019b} was the first proof of reserves protocol for MimbleWimble backed cryptocurrencies.
+It uses non-interactive zero-knowledge (NIZK) proofs of knowledge for proving statements involving discrete logarithms which were originally introduced by \cite{Camenisch1997}.
+% It presented a ring signature based approach to design proof of reserves proving statement of the form: an exchange owns $s$-out-of-$n$ outputs in a given anonymity set of size $n$.
+% We briefly discuss Ring signature and Linkable Ring signature schemes used by \R and then present the idea of \Rw.
+
+% \subsection{Ring Signatures}
+
+% Ring Signatures were first introduced by Rivest et al. \cite{Rivest2001} in a paper titled `How to Leak a Secret'.
+% Ring signatures make it possible to specify a set of possible signers without revealing which member actually produced the signature.
+% They do not require any setup or coordination as against group signatures.
+
+
+
+\subsection{Proving Statements About Discrete Logarithms}
+
+Let $\G$ be a cyclic group of prime order $q$. Let $G, G^{\prime}, H$ be the generators of the group such that the discrete log relation between any two of them is assumed to be unknown.
+We will use additive notation to be consistent with the notation used in \R paper.
+\R uses three particular types of NIZK proofs of knowledge as defined below.
+Let $\H \{0,1\}^{*} \rightarrow \Z_q $ be a cryptographic hash function modelled as a random oracle. 
+The scalar pair $(\alpha, \beta) \in \Z_q^2$ is called as the representation of $X \in \G$ with respect to generators $G,H$ such that $X = \alpha G + \beta H$.
+\begin{definition}
+    A pair of scalars $(c,s) \in \Z_q^2$ is a NIZK proof of knowledge of the discrete log of an element $X \in \G$ with respect to a generator $G$ if they satisfy
+    $$ c = \H(G,X,sG + cX). $$We will denote such a pair by $PoK\{\alpha \ | \ X = \alpha G \}$.
+\end{definition}
+
+\begin{definition}
+    A triple of scalars $(c,s_1,s_2) \in \Z_q^3$ is a NIZK proof of knowledge and equality of the representations of $X,Y \in \G$ with respect to generator pairs $(G,H)$ and $(G^{\prime}, H)$ respectively if they satisfy
+    $$ c = \H(S, s_1G+ s_2H+ cX,s_1G^{\prime} + s_2H + cX). $$where $S = (G\|G^{\prime}\|H\|X\|Y)$. We will denote such a triple by 
+    \begin{equation*}
+        PoK\{\underbrace{(\alpha, \beta)}_{\textsl{wit}} \ | \ \underbrace{X = \alpha G + \beta H \ \wedge \ Y = \alpha G^{\prime} + \beta H}_{\textsl{stmt}} \}.
+    \end{equation*}
+\end{definition}
+
+\begin{definition}
+    A 5-tuple of scalars $(c_1,c_2,s_1,s_2,s_3) \in \Z_q^5$ is a NIZK proof of either
+    \begin{enumerate}
+        \item[(i)] the knowledge and equality of the representations of $X,Y \in \G$ with respect to generator pairs $(G,H)$ and $(G^{\prime}, H)$ respectively OR
+        \item[(ii)] knowledge of the discrete logarithm of the element $Y \in \G$ with respect to generator $G^{\prime}$, 
+    \end{enumerate}  
+    if they satisfy
+    $$ c_1 + c_2 = \H(S, V_1, V_2, V_3). $$where $S = (G\|G^{\prime}\|H\|X\|Y)$ and 
+    \begin{align*}
+        V_1 &= s_1G+ s_2H+ c_1X, \\
+        V_2 &= s_1G^{\prime}+ s_2H+ c_1X, \\
+        V_3 &= s_3G^{\prime}+ c_2Y
+    \end{align*}
+    We will denote such a triple by 
+    \begin{equation*}
+        PoK\{\underbrace{(\alpha, \beta, \gamma)}_{\textsl{wit}} \ | \ \underbrace{(X = \alpha G + \beta H \ \wedge \ Y = \alpha G^{\prime} + \beta H) \vee (Y = \gamma G^{\prime})}_{\textsl{OR stmt}} \}.
+    \end{equation*}
+\end{definition}
+
+\subsection{Main Idea of \textnormal{{\fontfamily{qag}\selectfont Revelio}}}
+
+To generate a \R proof, an exchange chooses an anonymity set $\C_{\text{anon}} = (C_1, C_2, \dots, C_n)$ from the Grin blockchain.
+Let the set of outputs owned by the exchange be $\C_{\text{own}} \subset \C_{\text{anon}}$. 
+For $C_i \in C_{\text{own}}$, the exchange knows the blinding factor $k_i \in\Z_q$ such that $C_i = k_iG + a_iH$.
+For each $C_i \in C_{\text{anon}}$, the exchange also publishes a tag $I_i$ defined as
+\begin{equation}
+    I_i = 
+    \begin{cases}
+        k_iG^{\prime} + v_iH & \text{if } C_i \in C_{\text{own}}\\
+        y_iG^{\prime} & \text{if } C_i \notin C_{\text{own}}
+    \end{cases}
+\end{equation}
+where $y_i = \H(k_{\text{exch}}, C_i)$ and $k_{\text{exch}}$ is a long-term secret key of the exchange.
+The reason for such a definition of $y_i$ is that it needs to be a determinitic function of the chosen cover output $C_i$.
+This is because we need to have consistent tag for a particular cover output $C_i$ appearing in $\C_{\text{anon}}$ over multiple \R proofs.
+Additionally, the exchange publishes NIZK PoK $\sigma_i = (c_1^i,c_2^i, s_1^i, s_2^i, s_3^i)$ of the form 
+\begin{equation*}
+    PoK\{(\alpha, \beta, \gamma) \ | \ (C_i = \alpha G + \beta H \ \wedge \ I_i = \alpha G^{\prime} + \beta H) \vee (I_i = \gamma G^{\prime}) \}.
+\end{equation*}
+Lastly, the exchange claims that the commitment $C_{\text{assets}} = \sum_{i \in [n]} I_i$
+is a Pedersen commitment to the total assets owned by the exchange.
+Note that the tag list $(I_1, I_2, \dots, I_n)$ is used to check collusion among exchanges.
+A \R proof verification involves checking of any matches in tags of different exchanges and verification of the NIZK PoKs $\sigma_i \ \forall i \in [n]$.
+
+\subsection{Drawbacks of \textnormal{{\fontfamily{qag}\selectfont Revelio}}}
+
+The size of a \R proof is $5n$ elements in $\Z_q$ and $n+1$ elements in $\G$.
+Privacy provided by \R for exchange-owned outputs directly depends on the number of cover addresses used.
+An exchange would ideally like to have the entire UTXO set as the anonymity set. 
+Since the proof sizes in \R increase linearly
+with the size of $C_{\text{anon}}$, setting $C_{\text{anon}}$ to be equal
+to the whole UTXO set is not a scalable strategy.
+
+The collusion-resistance property of \R works only
+if all the exchanges generate their proofs using the same
+blockchain state.
+Cryptographically enforcing simultaneous proof generation is necessary to avoid cheating by exchanges.
+Both of the above drawbacks led us to the development of \RB which solves the above drawbacks with a higher computational cost.
+We describe \RB in the next chapter. 

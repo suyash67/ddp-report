@@ -1,0 +1,39 @@
+\section{Omniring}
+\label{scn:omniring}
+
+Omniring \cite{Lai2019} was proposed as a novel RingCT scheme which (i) did not require any trusted setup,
+(ii) had a proof size logarithmic in the size of the ring, and (iii) allowed to share the same
+ring between all source addressed in a transaction, thereby enabling significantly improved privacy.
+Omniring provides key insights in the direction of generalising Bulletproofs \cite{Bunz2018} framework for RingCT applications.
+
+\subsection{Main Idea}
+\label{subscn:idea_omniring}
+
+We start with a ring $\mathcal{R} = (P_1, P_2, \dots, P_n) \in \G^n$ of public keys of the form $P_i = g^{x_i}$ where $g \in \G$ is the group generator and $x_i \in \Z_q$ is the secret key, for all $i \in [n]$.
+Suppose we own the public keys (addresses) at indices $(i_1, i_2, \dots, i_s)$ such that each $i_j \in [n]$ for all $j \in [s]$ and $s < n$.
+This implies that we know the secret keys $\textbf{x} = (x_{i_1}, x_{i_2}, \dots, x_{i_s})$.
+We would like to prove the knowledge of tuples $(i_j, x_{i_j})$ for $j \in [s]$.
+For all $j\in [s]$, let us define unit vectors $\textbf{e}_{j} \in \{0,1\}^n$ such that it has $1$ only in position $i_j$.
+Therefore,
+\begin{align}
+    1 &= g^{-x_j} \mathcal{R}^{\textbf{e}_{j}} \text{ for all } j \in [s]. \nonumber \\
+    \intertext{Combining the above equations using powers of a scalar challenge $u \in \Z_q$, we get}
+    \implies 1 &= g^{- \langle \vecnb{u}^s, \textbf{x} \rangle} \cdot \mathcal{R}^{\sum_{j=1}^s u^{j-1} \textbf{e}_{j}}.
+    \label{eqn:maineq_omniring}
+\end{align}
+We will refer to equation (\ref{eqn:maineq_omniring}) as the \textit{main equality}.
+By embedding the bases $(g \| \mathcal{R})$ and secrets $\textbf{a} = (\textbf{e}_{1}, \textbf{e}_2, \dots, \textbf{e}_s, x_{i_1}, x_{i_2}, \dots, x_{i_s})$ in the main equality in form of a Pedersen vector commitment, we can build an inner product relationship between the secrets and challenges to use the Bulletproofs framework in building a RingCT.
+However, the soundness of Bulletproofs is guaranteed because the elements in the base vectors used in the Pedersen vector commitment are independent and uniformly random.
+In this case, the prover might know the discrete log relationship between some elements in $\mathcal{R}$ since he owns multiple addresses.
+To overcome this, Lai et al. \cite{Lai2019} proposed using base vector of the form:
+\begin{equation*}
+    \textbf{g}_w \coloneqq (g \| \mathcal{R})^{\circ w} \circ \textbf{p},
+\end{equation*}
+where $w \in \Z_q$ and $\textbf{p} \rgen \G^{n+1}$. 
+A \textsf{PPT} adversary cannot find the discrete log relation between the elements of the newly constructed base $\textbf{g}_w$ (refer to Lemma \ref{thmNoDLBase}).
+Note that $\textbf{g}_w^{\textbf{a}} = \textbf{g}_{w^{\prime}}^{\textbf{a}}$ for any $w, w^{\prime} \in \Z_q$ because of the main equality.
+Therefore, using the new base vector for two different challenges $w, w^{\prime} \in \Z_q$, we can run a Bulletproofs-like protocol twice and extract the secret vectors.
+This ensures that the Bulletproofs-like protocol preserves soundness.
+
+
+

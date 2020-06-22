@@ -46,6 +46,55 @@
 \usepackage{caption,subcaption}
 % \usepackage{subfigure}
 
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{lmodern, tikzpeople}
+\usetikzlibrary{positioning, shapes.multipart}
+
+\newcommand*{\colorboxed}{}
+\def\colorboxed#1#{%
+  \colorboxedAux{#1}%
+}
+\newcommand*{\colorboxedAux}[3]{%
+  % #1: optional argument for color model
+  % #2: color specification
+  % #3: formula
+  \begingroup
+    \colorlet{cb@saved}{.}%
+    \color#1{#2}%
+    \boxed{%
+      \color{cb@saved}%
+      #3%
+    }%
+  \endgroup
+}
+
+\newcommand{\Pe}{\mathbb{P}}
+\newcommand{\ord}{\mathcal{O}}
+\newcommand{\pr}{\mathcal{P}}
+\newcommand{\vr}{\mathcal{V}}
+\newcommand{\rel}{\mathcal{R}}
+\renewcommand{\H}{\mathcal{H}}
+\newcommand{\cL}{\textbf{c}_L}
+\newcommand{\cR}{\textbf{c}_R}
+
+
+\renewcommand{\algorithmicrequire}{\textbf{Input:}}
+\renewcommand{\algorithmicensure}{\textbf{Output:}}
+
+\usepackage{algpseudocode}
+\algnewcommand\algorithmicprotocol{\textbf{Protocol:}}
+\algnewcommand\PROTOCOL{\item[\algorithmicprotocol]}
+
+\algnewcommand\algorithmicinput{\textbf{Input:}}
+\algnewcommand\INPUT{\item[\algorithmicinput]}
+
+\algnewcommand\algorithmicoutput{\textbf{Output:}}
+\algnewcommand\OUTPUT{\item[\algorithmicoutput]}
+
+\makeatletter
+\newcommand*{\rom}[1]{\expandafter\@slowromancap\romannumeral #1@}
+\makeatother
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \usepackage{pgfplots}
 \pgfplotsset{compat=1.9}
@@ -85,6 +134,9 @@
   revelioBP/reveliobp,
   grin-ub/grin_ub,
   lit/literature,
+  lit/omniring,
+  lit/bulletproofs,
+  lit/ipp,
   expt/experimental,
   rnd/results, 
   dec,abs,pub,ack,appendix
@@ -188,6 +240,18 @@
 
 
 \newtheorem{defn}{Definition}[section]
+
+
+% ticks
+\usepackage{pifont}% http://ctan.org/pkg/pifont
+\usepackage{tabularx}
+\newcolumntype{L}[1]{>{\raggedright\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{C}[1]{>{\centering\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcolumntype{R}[1]{>{\raggedleft\let\newline\\\arraybackslash\hspace{0pt}}m{#1}}
+\newcommand{\cmark}{\ding{51}}%
+\newcommand{\xmark}{\ding{55}}%
+\newcommand{\pro}{\textcolor{green}{\cmark}}
+\newcommand{\con}{\textcolor{red}{\xmark}}
 
 
 % Referencing macros
@@ -307,9 +371,9 @@
 %****************************************************************** 
 \include{intro/introduction}
 \include{prelims/crypto_prelims}
+\include{lit/literature}
 \include{revelioBP/reveliobp}
 \include{grin-ub/grin_ub}
-\include{lit/literature}
 \include{expt/experimental}
 \include{rnd/results}
 

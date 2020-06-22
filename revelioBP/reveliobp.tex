@@ -6,7 +6,9 @@
 MimbleWimble is a design for a scalable cryptocurrency which was proposed in 2016 \cite{Jedusor2016}. Beam and Grin are two implementations of the MimbleWimble protocol which are available on several exchanges \cite{Coinmarketcap}. \R \cite{Dutta2019b} was the first proof of reserves protocol for MimbleWimble coins which provided some privacy to exchanges by hiding the exchange-owned outputs inside an anonymity set of outputs. As the anonymity set is revealed as part of the proof of reserves, a larger anonymity set results in better privacy for the exchange. Since the \R proof size scales linearly with the anonymity set, it becomes an impediment in scaling the anonymity set to the set of all unspent transaction outputs (UTXOs).
 To solve the scalability issue of \Rw, we designed \RB leveraging the Bulletproofs \cite{Bunz2018} framework, resulting in the proof size being logarithmic in the anonymity set size.\\[-6pt]   
 
-\noindent \textbf{Our Contribution.} In this paper, we present \Rplus, a proof of reserves protocol for MimbleWimble with proof sizes scaling \textit{logarithmcally} in the size of the anonymity set and \textit{linearly} in the size of the exchange-owned output set.
+% \noindent \textbf{Our Contribution.}
+\section{Our Contribution}
+In this chapter, we present \Rplus, a proof of reserves protocol for MimbleWimble with proof sizes scaling \textit{logarithmcally} in the size of the anonymity set and \textit{linearly} in the size of the exchange-owned output set.
 This makes it feasible to choose the anonymity set to be the set of all UTXOs on the blockchain.  
 To make quantitative comparisons, we have implemented \RB  in Rust.
 At the time of writing this paper, the number of UTXOs on the Grin blockchain is approximately 161,000 \cite{GrinScanWebsite}.
@@ -22,23 +24,23 @@ In conclusion, we quantitatively highlight the trade-off between proof size and 
 %
 %
 %
-\vspace{-2pt}
-\section{Preliminaries}
-\vspace{-4pt}
+% \vspace{-2pt}
+% \section{Overview of Grin}
+% \vspace{-4pt}
 %Before delving into the details of our protocol, we include a necessary primer in this section to help understand the protocol better.
-\subsection{Notation}
-Let $\mathcal{G} = \{ \G, q, g \}$ be the description of a cyclic group $\G$ of prime order $q$ with generator $g$ of $\G$. Let $h\in \G$ be another random generator of $\G$ such that the discrete logarithm relation between $g$ and $h$ is not known. Let
-$\G^n$ and $\Z^n_q$ be the $n$-ary Cartesian products of sets $\G$ and $\Z_q$ respectively.
+% \subsection{Notation}
+% Let $\mathcal{G} = \{ \G, q, g \}$ be the description of a cyclic group $\G$ of prime order $q$ with generator $g$ of $\G$. Let $h\in \G$ be another random generator of $\G$ such that the discrete logarithm relation between $g$ and $h$ is not known. Let
+% $\G^n$ and $\Z^n_q$ be the $n$-ary Cartesian products of sets $\G$ and $\Z_q$ respectively.
 
-Group elements which are Pedersen commitments are denoted by uppercase letters and randomly chosen group elements are denoted by lowercase letters.
+% Group elements which are Pedersen commitments are denoted by uppercase letters and randomly chosen group elements are denoted by lowercase letters.
 
-Bold font denotes vectors.
-Inner product of two vectors $\textbf{a}, \textbf{b} \in \Z_q^n$ is defined as $\langle \textbf{a},\textbf{b} \rangle \coloneqq \sum_{i=1}^{n} a_i \cdot b_i$ where $\textbf{a}=(a_1,\dots, a_n), \textbf{b}=(b_1,\dots,b_n)$. Further, Hadamard and Kronecker products are defined respectively as, $\textbf{a} \circ \textbf{b} \coloneqq (a_1 \cdot b_1, \dots, a_n \cdot b_n) \in \mathbb{Z}_q^n$, $\textbf{a} \otimes \textbf{c} \coloneqq (a_1 \textbf{c}, \dots, a_n \textbf{c}) \in \mathbb{Z}_q^{nm}$ where $\textbf{c} \in \mathbb{Z}_q^m$. For a base vector $\textbf{g} = (g_1, \dots, g_n) \in \G^n$, vector exponentiation is defined as $\textbf{g}^{\textbf{a}} = \prod_{i=1}^{n}g_i^{a_i} \in \G$. For a scalar $u \in \Z_q^{\ast}$, we denote its consecutive powers in the form of a vector $\vecnb{u}^{n} \coloneqq (1, u, u^2, \dots, u^{n-1})$.
-To represent the exponentiation of all components of a vector $\textbf{a}$ by the same scalar $k \in \Z_q$, we use $\textbf{a}^{\circ k}$ to mean $(a_1^k, a_2^k, \ldots,a_n^{k})$.
-If an element $a$ is chosen uniformly from a set $A$, such a choice is denoted by $a \rgen A$.
-For a positive integer n, let $[n]$ denote the set $\{1,2,\dots,n\}$.
+% Bold font denotes vectors.
+% Inner product of two vectors $\textbf{a}, \textbf{b} \in \Z_q^n$ is defined as $\langle \textbf{a},\textbf{b} \rangle \coloneqq \sum_{i=1}^{n} a_i \cdot b_i$ where $\textbf{a}=(a_1,\dots, a_n), \textbf{b}=(b_1,\dots,b_n)$. Further, Hadamard and Kronecker products are defined respectively as, $\textbf{a} \circ \textbf{b} \coloneqq (a_1 \cdot b_1, \dots, a_n \cdot b_n) \in \mathbb{Z}_q^n$, $\textbf{a} \otimes \textbf{c} \coloneqq (a_1 \textbf{c}, \dots, a_n \textbf{c}) \in \mathbb{Z}_q^{nm}$ where $\textbf{c} \in \mathbb{Z}_q^m$. For a base vector $\textbf{g} = (g_1, \dots, g_n) \in \G^n$, vector exponentiation is defined as $\textbf{g}^{\textbf{a}} = \prod_{i=1}^{n}g_i^{a_i} \in \G$. For a scalar $u \in \Z_q^{\ast}$, we denote its consecutive powers in the form of a vector $\vecnb{u}^{n} \coloneqq (1, u, u^2, \dots, u^{n-1})$.
+% To represent the exponentiation of all components of a vector $\textbf{a}$ by the same scalar $k \in \Z_q$, we use $\textbf{a}^{\circ k}$ to mean $(a_1^k, a_2^k, \ldots,a_n^{k})$.
+% If an element $a$ is chosen uniformly from a set $A$, such a choice is denoted by $a \rgen A$.
+% For a positive integer n, let $[n]$ denote the set $\{1,2,\dots,n\}$.
 
-\subsection{Outputs in MimbleWimble}
+\section{Outputs in MimbleWimble}
 
 In MimbleWimble, coins are stored in outputs which consist of Pedersen commitments of the form $C = g^rh^a\in \G$ where $g , h \in \G$ and $r,a \in \Z_q$. Here $a$ represents the amount of coins stored in the output and $r$ is a blinding factor. Each commitment is accompanied by a range proof which proves that the amount $a$ lies in the range $\{0,1,2,\ldots,2^{64}-1\}$.
 
@@ -46,8 +48,9 @@ The group elements $g$ and $h$ are assumed to have an unknown discrete logarithm
 
 To spend an output having the commitment $C = g^r h^a$, knowledge of the blinding factor $r$ is required \cite{GrinDocOnGithub}. As spending ability is equivalent to ownership, a proof of reserves protocol for MimbleWimble involves a proof of knowledge of blinding factors of several outputs.
 
-\vspace{-2pt}
-\subsection{From Omniring to \textnormal{{\fontfamily{qag}\selectfont RevelioBP}}}
+% \vspace{-2pt}
+
+\section{From Omniring to \textnormal{{\fontfamily{qag}\selectfont RevelioBP}}}
 In Monero, source addresses in a transaction are obfuscated using ring signatures and the amounts are hidden in Pedersen commitments \cite{Noether2016}. 
 %The transaction structure, called \textit{ring confidential transaction (RingCT)}, proves that (a) the transaction creator knows one of the private keys corresponding to the public keys in the ring, (b) the sum of the amounts in the input Pedersen commitments is equal to the sum of the amounts in the output Pedersen commitments plus transaction fees, and (c) the output Pedersen commitments contain amounts in a valid range.
 The current transaction structure in Monero, called \textit{ring confidential transaction (RingCT)}, has proof sizes which scale linearly in the ring size. Omniring \cite{Lai2019} is a recent proposal for RingCTs with proof sizes which scale logarithmically in the ring size. It relies on Bulletproofs \cite{Bunz2018} to achieve this size reduction. Given a ring $\mathcal{R} = (R_1, R_2,\ldots,R_n)$ of public keys where $R_i = h^{x_i}$ for $h \in \G, x_i \in \Z_q$, the Omniring construction enables a prover to prove knowledge of the private keys $x_{i_1}, x_{i_2},\ldots,x_{i_m}$ corresponding to a subset $\mathcal{R}_{\mathcal{S}}$ of $\mathcal{R}$ without revealing $\mathcal{R}_{\mathcal{S}}$. For each public key $R_j$ in this subset $\mathcal{R}_{\mathcal{S}}$, the prover also outputs a \textit{tag} given by $\textsl{tag}_j = g^{x_j^{-1}}$ for $g \in \G$. This tag is used to detect double spending from a source address.
@@ -266,7 +269,8 @@ Owing to (\ref{eqnMainEqualityCompressed}), (\ref{eqnBase}), (\ref{eqnExp}), we 
 Thus, the above vector commitment to $\textbf{a}$ remains the same for any $w \in \Z_q$. By successfully running the Bulletproofs protocol twice on $A$ with respect to two different bases
 $(h^{\prime} \| \textbf{g}_w \| \textbf{h})$ and $(h^{\prime} \| \textbf{g}_{w^{\prime}} \| \textbf{h})$ we can extract the secret vector $\textbf{a}$ such that $A = (h^{\prime})^{r}\textbf{g}_w^{\textbf{a}} \textbf{h}^{\textbf{b}} = (h^{\prime})^{r}\textbf{g}_{w^{\prime}}^{\textbf{a}} \textbf{h}^{\textbf{b}}$.
 This solves the problem of extractability (soundness) of the protocol.
-In summary, we are now ready to construct a Bulletproofs-based argument of knowledge proving that the exchange some outputs from the entire set of UTXOs.
+In summary, we are now ready to construct a Bulletproofs-based argument of knowledge proving that the exchange owns some outputs from the entire set of UTXOs.
+The next step is to develop an inner product relation between the secret vectors $\textbf{a}$ and $\textbf{b}$ to enable us in designing a Bulletproofs-like protocol.
 
 % To prove knowledge of the exact secrets $(r_j, \textbf{e}_{i_j})$, we append the above base and the exponent vectors with $\textbf{g}^{\prime} \rgen \G^{n+1}$ and $(\textbf{e}_{i_j} \| r_j)$ respectively.
 % \begin{align}
@@ -293,153 +297,106 @@ In summary, we are now ready to construct a Bulletproofs-based argument of knowl
 % \noindent We refer to the above equlity as \textit{main equality}. The base and the exponent vectors become 
 % \begin{gather}
 %   \textbf{g}_w \coloneqq \left[((g\|g_t\|\textbf{C}\|\hat{I})^w \circ \textbf{p}) \| \textbf{g}^{\prime}\right]. \\
-%   \textbf{c}_L \coloneqq \left[(\xi \| \xi^{\prime} \| \hat{\textbf{e}} \| 1) \ \| \ (\Emat \| \vecnb{r}) \right].
+%   \cL \coloneqq \left[(\xi \| \xi^{\prime} \| \hat{\textbf{e}} \| 1) \ \| \ (\Emat \| \vecnb{r}) \right].
 % \end{gather}
-% \noindent where $\textbf{g}^{\prime} \rgen \G^{sn +s}$. The definition of second secret vector $\textbf{c}_R$ is shown in Fig. (\ref{label:witness}).
-% Using constraint vectors defined in Fig. (\ref{fig:conVec1}, \ref{fig:conVec2}), we construct inner-product based relations between the secret vectors $(\textbf{c}_L, \textbf{c}_R)$ as 
+% \noindent where $\textbf{g}^{\prime} \rgen \G^{sn +s}$. The definition of second secret vector $\cR$ is shown in Fig. (\ref{label:witness}).
+% Using constraint vectors defined in Fig. (\ref{fig:conVec1}, \ref{fig:conVec2}), we construct inner-product based relations between the secret vectors $(\cL, \cR)$ as 
 % shown in Fig. (\ref{fig:syseqn}). Note that the constraint vectors depend only on the public-coin challenges from the verifier.
+
+\subsection{Building Inner Product Relation}
+
+We have computed the secret vector $\textbf{a}$ and the base vector $\textbf{g}_w$ given by equations (\ref{eqnBaseCompressed}), (\ref{eqnExpCompressed}) overcoming the difficulties in using a Bulletproofs-like framework.
+We rename secret vectors $\textbf{a}, \textbf{b}$ as $\cL, \cR \in \Z_q^N$ respectively and define them in Figure \ref{fig:witness}.
+Note that $\cR$ is defined based on $\cL$. We now wish to construct an inner product relationship between $\cL$ and $\cR$.
+We use vector indexing starting from $1$, i.e. $\cL[k_1:k_2] = (\cL[k_1], \cL[k_1+1], \dots, \cL[k_2-1])$ where $k_1, k_2 \in \N, k_1 < k_2$. 
+\begin{enumerate}
+  \item[(i)] $\textbf{e}_L = \cL[n+4: n+4+sn] = \textsl{vec}(\Emat) \in \{0,1\}^{sn}$ and $\textbf{e}_R = \cR[n+4: n+4+sn] = \textbf{1}^{sn} - \textsl{vec}(\Emat) \in \{0,1\}^{sn}$, i.e. those slices are element-wise binary complements.
+  Therefore, for a scalar vector $\vecnb{y}^{sn} \in \Z_q^{sn}$, we should have $ \textbf{e}_L \circ (\textbf{e}_R \circ \vecnb{y}^{sn}) = \textbf{0}^{sn}$, leading to inner-product constraint (\ref{ceq0}).
+  \item[(ii)] Next, compressed secrets $\xi, \xi^{\prime}$ are related such that $\xi + \xi^{\prime} = 0$ and $\xi = -\langle \vecnb{u}^s, \textbf{r}\rangle$.
+  This means that for a scalar $v \in \Z_q$, we must have 
+  \begin{gather*}
+    v \xi + \xi^{\prime} = (v-1)\xi = -(v-1) \langle \vecnb{u}^s, \textbf{r}\rangle, \\
+    \implies \xi + \xi^{\prime} + \langle (v-1)\vecnb{u}^s, \textbf{r}\rangle = 0.
+  \end{gather*}
+  This leads us to the constraint (\ref{ceq1}).
+
+  \item[(iii)] We have the compressed secret vector for indices as
+  \begin{equation*}
+    \hat{\textbf{e}} = \vecnb{u}^s \Emat = (0, 0, \underbrace{1}_{i_1}, \dots, \underbrace{u}_{i_2}, \dots, \underbrace{u^2}_{i_3}, \dots, \underbrace{u^{s-1}}_{i_s}, \dots, 0, 0) \in \Z_q^n.
+  \end{equation*} 
+  To prove that $\hat{\textbf{e}}$ actually is of this form, we multiply it with a scalar vector $\vecnb{y}^{n}$.
+  \begin{equation*}
+    \vecnb{y}^n \circ \hat{\textbf{e}} = (0, 0, \underbrace{y^{i_1} \cdot 1}_{i_1}, \dots, \underbrace{y^{i_2} \cdot u}_{i_2}, \dots, \underbrace{y^{i_3} \cdot u^2}_{i_3}, \dots, \underbrace{y^{i_s} \cdot u^{s-1}}_{i_s}, \dots, 0, 0) \in \Z_q^n.
+  \end{equation*} 
+  Now we get this same structure if we do the following: $\textbf{e}_L \circ (\vecnb{u}^s \otimes \vecnb{y}^n)$ leading us to constraint (\ref{ceq2}).
+
+  \item[(iv)] We know that if we add up all the elements of $\textbf{e}_L \circ (\vecnb{y}^s \otimes \textbf{1}^n)$, we will get the sum as $\sum_{j=1}^s y^{j-1}$.
+  To prove that $\cL[n+3] = 1$, if we multiply $\cL[n+3]$ with $y^s$ and add it to the sum computed above, we must get $\langle \textbf{1}^{s+1},\vecnb{y}^{s+1} \rangle$, leading us to constraint (\ref{ceq3}).
+  
+  \item[(v)] Lastly, to ensure that elements of $\textbf{e}_L$ and $\textbf{e}_R$ are actually $\{0,1\}$, checking if $\langle \textbf{e}_L + \textbf{e}_R - \vecnb{1}^{sn}, \vecnb{y}^{sn} \rangle = 0$ should suffice.
+  This forms the last constraint (\ref{ceq4}). 
+\end{enumerate}
+\noindent
+Now, we have all the required relations between the secret vectors in Figure \ref{fig:syseqn} to ensure that an honest prover's witness encoding is correct.
+We now combine all these constraints in a single inner product relation by multiplying each and constraint by a power of a scalar and adding them up.
+\begin{multline*}
+  \langle \cL, \cR  \circ \textbf{v}_0 \rangle + 
+  z \cdot \langle \cL , \textbf{v}_{1} \rangle +
+  z^2 \cdot \langle \cL, \textbf{v}_2 \rangle + \\
+  z^3 \cdot \langle \cL, \textbf{v}_3 \rangle  +
+  z^4 \cdot \langle \cL + \cR - \vecnb{1}^{t}, \textbf{v}_{4} \rangle 
+  = z^3 \cdot \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle,
+\end{multline*}
+\begin{gather*}
+  \implies
+  \langle \cL, \cR  \circ \textbf{v}_0 \rangle + \langle \cL , \sum_{i=1}^{4} z^i \cdot \textbf{v}_{i} \rangle 
+  + \langle \cR, z^4 \cdot \textbf{v}_{4} \rangle
+  =
+  z^3 \cdot \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle
+  + \langle \vecnb{1}^{t}, z^4 \cdot \textbf{v}_{4} \rangle
+\end{gather*}
+Substituting the compressed constraint vectors $\vecnb{\theta}, \vecnb{\mu}, \vecnb{\nu}$ as defined in Figure \ref{fig:conVec2}, 
+\begin{gather*}
+  \implies
+  \langle \cL, \cR  \circ \vecnb{\theta} \rangle + \langle \cL , \vecnb{\mu} \rangle 
+  + \langle \cR, \vecnb{\nu} \rangle
+  =
+  z^3 \cdot \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle
+  + \langle \vecnb{1}^{t}, \vecnb{\nu} \rangle,
+\end{gather*}
+Combining the first and third terms on the lhs using constraint vector $\vecnb{\theta}^{\circ -1}$,
+\begin{gather*}
+  \implies
+  \langle \cL, \cR  \circ \vecnb{\theta} \rangle + \langle \cL , \vecnb{\mu} \rangle 
+  + \langle \cR \circ \vecnb{\theta}, \vecnb{\nu} \circ \vecnb{\theta}^{\circ -1} \rangle
+  =
+  z^3 \cdot \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle
+  + \langle \vecnb{1}^{t}, \vecnb{\nu} \rangle,\\
+  % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \implies
+  \langle \cL + \vecnb{\nu} \circ \vecnb{\theta}^{\circ -1}, \cR  \circ \vecnb{\theta} \rangle 
+  + \langle \cL , \vecnb{\mu} \rangle 
+  =
+  z^3 \cdot \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle
+  + \langle \vecnb{1}^{t}, \vecnb{\nu} \rangle,\\
+  % %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  \intertext{Substituting compressed constraint vector $\vecnb{\alpha}$ and scalar $\delta$, we get}
+  \implies
+  \langle \cL + \vecnb{\alpha}, \cR  \circ \vecnb{\theta} \rangle 
+  + \langle \cL , \vecnb{\mu} \rangle 
+  =
+  \delta,\\
+  \implies
+  \langle \cL + \vecnb{\alpha}, \cR  \circ \vecnb{\theta} \rangle + \vecnb{\mu}
+  =
+  \delta + \langle \vecnb{\mu}, \vecnb{\alpha} \rangle
+\end{gather*}
+The final equation is the required single inner product relation.
+We can now proceed in constructing a Bulletproofs-like protocol for this inner product relation.  
 
 The interactive protocol $\Uppi_{\RBmath} = (\textsl{Setup}, \langle \P, \V \rangle)$ for the language $\mathcal{L}_{\RBmath}$ is shown in Figure \ref{fig:protocol_revBP}. Note that \textsl{Setup}, prover $\mathcal{P}$ and verifier $\V$ are \textsf{PPT} algorithms.
 The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:witness}, \ref{fig:conVec1}, \ref{fig:conVec2}, \ref{fig:syseqn}.
 
-  
-%%%%%%%%%%%%%%%%%%%%
-% The protocol
-%%%%%%%%%%%%%%%%%%%%
-\begin{figure}[h!]
-  \caption{Argument of knowledge for $\L_{\RBmath}$}
-  \label{fig:protocol_revBP}
-\end{figure}
-\vspace{-12pt}
-\begin{mdframed}
-  \begin{itemize}[itemsep=4pt]
-    % Setup Phase
-    \item[] \textsl{Setup}($\lambda, \mathcal{L}$):
-    \\[-5pt]\rule{\textwidth}{0.4pt}\\ 
-    $\mathcal{L}(\G, q, g, h, g_t)$ as defined in (\ref{eqnRevelioPlusLanguage}),
-    \\[2pt]
-    Generate following elements randomly from $\G$
-    \\[2pt]
-    $h^{\prime} \rgen \G, \textbf{p} \rgen \G^{n+3},  \textbf{g}^{\prime} \rgen \G^{sn+s}, \textbf{h} \rgen \G^N$
-    \\[2pt]
-    Output:\hspace{1.5mm} \textsl{crs} = $(\G, q, g, h, g_t, h^{\prime}, \textbf{p}, \textbf{g}^{\prime}, \textbf{h})$
-    \vspace{2pt}
-
-    % Prover
-    \item[] $\langle \mathcal{P}(\textsl{crs, stmt, wit}), \mathcal{V}(\textsl{crs, stmt}) \rangle$ :
-    \\[-5pt]\rule{\textwidth}{0.4pt}
-
-    % \item[] $\mathcal{V}$: $u,v \rgen \Z$, $\mathcal{V} \longrightarrow \P$: $u, v$
-  
-    % \item[] $\mathcal{V} \longrightarrow \P$: $u$
-    
-    % \item[] $\P, \ \V$:
-    % \begin{enumerate}[itemsep=5pt]
-    %     \item[(i)] $\hat{I} \coloneqq \ \textbf{I}^{- \vecnb{u}^s}$
-        
-    %     \item[(ii)] For $w \in \Z_q$, write
-    %     \vspace{-4pt}
-    %     \begin{equation}
-    %       \textbf{g}_{w} \coloneqq \big[ \big((g \| g_t \| \textbf{C} \| \hat{I})^{\circ w} \circ \textbf{p}\big) \|\textbf{g}^{\prime} \big]
-    %     \end{equation}
-    % \end{enumerate}
-
-    \vspace{-4pt}
-    \item[] $\P$:\vspace{-4pt}
-    \begin{enumerate}[itemsep=5pt]
-        \item[(i)] $r_A \rgen \Z_q$
-        
-        \item[(ii)] $\textbf{g}_{0} = ( \textbf{p} \ \| \ \textbf{g}^{\prime} )$
-        
-        \item[(iii)] $A \coloneqq (h^{\prime})^{r_A} \textbf{g}_0^{\textbf{c}_L} \textbf{h}^{\textbf{c}_R}$ 
-        
-        % \item[] Note: $A = (h^{\prime})^{r_A} \textbf{g}_0^{\textbf{c}_L} \textbf{h}^{\textbf{c}_R} = (h^{\prime})^{r_A} \textbf{g}_w^{\textbf{c}_L} \textbf{h}^{\textbf{c}_R}$
-    \end{enumerate}
-  
-    \item[] $\mathcal{P} \longrightarrow \V$: $A$
-
-    \item[] $\mathcal{V}$: $u, v, w \rgen \Z_q$, $\mathcal{V} \longrightarrow \P$: $u, v, w$
-
-    % \item[] $\mathcal{V} \longrightarrow \P$: $w$
-
-    \item[] $\P, \ \V$:
-    \begin{enumerate}[itemsep=5pt]
-        \item[(i)] $\hat{I} \coloneqq \ \textbf{I}^{- \vecnb{u}^s}$
-        
-        \item[(ii)] $\textbf{g}_{w} \coloneqq \big[ \big((g \| g_t \| \textbf{C} \| \hat{I})^{\circ w} \circ \textbf{p}\big) \|\textbf{g}^{\prime} \big]$
-    \end{enumerate}
-      
-    \item[] $\mathcal{P}$:
-    \begin{enumerate}[itemsep=5pt]
-        \item[(i)] $r_S \rgen \Z_q, \ \textbf{s}_L \rgen \Z_q^N, \ \textbf{s}_R \in \Z_q^N$ s.t. $\forall j \in [N]$ 
-        \vspace{-3mm}
-        \item[] $\textbf{s}_R[j] = 
-        \begin{cases}
-          s_j \rgen \Z_q & \text{if } n+4 \le j \le N-s ,\\
-          0 & \text{otherwise}
-        \end{cases}$ 
-        \item[(ii)] $S = (h^{\prime})^{r_S} \textbf{g}_w^{\textbf{s}_L} \textbf{h}^{\textbf{s}_R}$ 
-    \end{enumerate}
-    
-    \item[] $\mathcal{P} \longrightarrow \V$: $S$
-    
-    \item[] $\mathcal{V}$: $y, z \rgen \Z_q$, $\mathcal{V} \longrightarrow \P$: $y, z$
-    
-    % \item[] $\mathcal{V} \longrightarrow \P$: $y, z$
-    
-    \item[] $\mathcal{P}$:
-    \begin{enumerate}[itemsep=5pt]
-      \item[(i)] Define the following polynomials in $\Z^{N}_q[X]$
-      % as a function of $X$ in $\Z^{N}_q[X]$:
-      \begin{align*}
-          l(X) &\coloneqq \ \textbf{c}_L + \boldsymbol{\alpha} + \textbf{s}_L \cdot X \\
-          r(X) &\coloneqq \ \vecnb{\theta} \circ \ (\textbf{c}_R + \textbf{s}_R \cdot X) + \vecnb{\mu}\\
-          t(X) &\coloneqq \langle l(X),r(X) \rangle = t_2 X^2 + t_1 X + t_0
-      \end{align*}
-      for $t_2, t_1, t_0 \in \Z_q$. Also, $t_0 = \delta$.
-        
-      \item[(ii)] $\tau_1, \tau_2 \rgen \Z_q$ 
-      
-      \item[(iii)] $T_1 = g^{t_1}h^{\tau_1}, T_2 = g^{t_2}h^{\tau_2}$ 
-    \end{enumerate}
-        
-    \item[] $\mathcal{P} \longrightarrow \V$: $T_1, T_2$
-  
-    \item[] $\mathcal{V}$: $x \rgen \Z_q$ , $\mathcal{V} \longrightarrow \P$: $x$
-
-    % \item[] $\mathcal{V} \longrightarrow \P$: $x$
-
-    \item[] $\mathcal{P}$: 
-    \begin{enumerate}[itemsep=5pt]
-        \item[(i)] $\lvec \coloneqq l(x) = \ \textbf{c}_L + \vecnb{\alpha} + \textbf{s}_L \cdot x \ \in \Z_q^N$
-        
-        \item[(ii)] $\rvec \coloneqq r(x) = \ \vecnb{\theta} \circ \ (\textbf{c}_R + \textbf{s}_R \cdot x) + \vecnb{\mu} \ \in \Z^N_q$
-        
-        \item[(iii)] $\hat{t} \coloneqq \langle \lvec, \rvec \rangle \ \in \Z_q$
-        
-        \item[(iv)] $\tau_x \coloneqq \tau_2x^2 + \tau_1x$
-        
-        \item[(v)] $r \coloneqq r_A + r_Sx$
-        
-    \end{enumerate}
-    
-    \item[] $\mathcal{P} \longrightarrow \V$: $\lvec, \rvec, \hat{t}, \tau_x, r$
-    
-    \item[] $\mathcal{V}$: 
-    \begin{enumerate}[itemsep=5pt]
-        \labelText{\item[(i)]}{label:veq1}
-        $\hat{t} \stackrel{?}{=} \langle \lvec, \rvec \rangle$ \hfill{{\small \textit{// $\hat{t}$ was computed correctly}}}
-
-        \labelText{\item[(ii)]}{label:veq2}
-        $g^{\hat{t}}h^{\tau_x} \stackrel{?}{=} g^{\delta} T_1^{x} T_2^{x^2}$ \hfill{{\small \textit{// $\hat{t}$ satisfies $t_0 + t_1x + t_2x^2$}}} 
-
-        \labelText{\item[(iii)]}{label:veq3}
-        $(h^{\prime})^{r} \textbf{g}^{\lvec}_w \textbf{h}^{\vecnb{\theta}^{\circ -1} \circ \rvec} \stackrel{?}{=} AS^{x} \textbf{g}^{\vecnb{\alpha}}_w \textbf{h}^{\vecnb{\beta}}$ \hfill{{\small \textit{// Check if $\lvec = l(x)$ and $\rvec = r(x)$}}}
-        
-    \end{enumerate}
-  
-  \end{itemize}
-\end{mdframed}
 
 %%%%%%%%%%%%%%%%%%%%%%
 % Notation
@@ -455,8 +412,8 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
     $\hat{\textbf{e}} = \vecnb{u}^s \Emat$ & \multirow{3}{*}{Compressed secrets ($\hat{\textbf{e}}, \xi, \xi^{\prime}$) satisfying $g^{\xi} g_t^{\xi^{\prime}}  \textbf{C}^{\hat{\textbf{e}}}  \hat{I} = 1$}\\
     $\xi \coloneqq -\langle \vecnb{u}^s, \textbf{r} \rangle $ & \\
     $\xi^{\prime} \coloneqq \langle \vecnb{u}^s, \textbf{r}\rangle$ & \\\hline
-    $\textbf{c}_L, \textbf{c}_R$ & Honest encoding of witness (Fig. \ref{fig:witness}) \\\hline
-    $N=s n + n + s + 3$ & Size of the vectors $\textbf{c}_L, \textbf{c}_R$ \\\hline
+    $\cL, \cR$ & Honest encoding of witness (Fig. \ref{fig:witness}) \\\hline
+    $N=s n + n + s + 3$ & Size of the vectors $\cL, \cR$ \\\hline
     $(\textbf{v}_0, \dots, \textbf{v}_4)(u,v,y)$ & Constraint vectors (Fig. \ref{fig:conVec1}, \ref{fig:conVec2})\\\hline
     $\vecnb{\alpha}, \vecnb{\beta}, \delta, \vecnb{\mu}, \vecnb{\nu}, \vecnb{\theta}(u,v,y,z)$ & Compressed constraint vectors (Fig. \ref{fig:conVec1}, \ref{fig:conVec2}, \ref{fig:syseqn}) \\ \hline
     $\textsf{EQ}(\vecnb{\gamma}_L, \vecnb{\gamma}_R)$ & Relationship between valid witnesses (Fig. \ref{fig:syseqn})\\\hline
@@ -545,48 +502,232 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   \label{fig:conVec1}
 \end{figure}
 
+\begin{flushleft}
+  \begin{minipage}{.48\textwidth}
+    \centering
+      \begin{gather*}
+        \vecnb{\theta} \coloneqq \textbf{v}_{0}, \hspace{0.5cm}
+        \vecnb{\mu} \coloneqq \sum_{i=1}^{4} z^{i} \textbf{v}_i, \hspace{0.5cm}
+        \vecnb{\nu} \coloneqq z^4 \textbf{v}_4,\\[4pt]
+        \vecnb{\theta}^{\circ -1}[j] = 
+        \begin{cases}
+          \left(\vecnb{\theta}[j]\right)^{-1} & \text{if } \vecnb{\theta}[j] \neq 0, \\
+          0 & \text{otherwise,}
+        \end{cases} \\[4pt]
+        \vecnb{\alpha} \coloneqq \vecnb{\theta}^{\circ -1} \circ \vecnb{\nu}, \hspace{1.7cm}
+        \vecnb{\beta} \coloneqq \vecnb{\theta}^{\circ -1} \circ \vecnb{\mu},\\[5pt]
+        \delta \coloneqq z^3 \cdot \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle + \langle \vecnb{\alpha}, \vecnb{\mu}\rangle + \langle \vecnb{1}^N, \vecnb{\nu}\rangle.
+      \end{gather*}
+    \captionof{figure}{Definitions of compressed constraint vectors}
+    \label{fig:conVec2}
+  \end{minipage}%
+  \hfill
+  \begin{minipage}{0.48\textwidth}
+    \centering
+      \begin{align}
+        &
+        \textsf{EQ}(\vecnb{\gamma}_L, \vecnb{\gamma}_R) = 0 \iff \nonumber\\
+        &
+        \langle \vecnb{\gamma}_L, \vecnb{\gamma}_R  \circ \textbf{v}_0 \rangle = 0 \label{ceq0},\\
+        &
+        \langle \vecnb{\gamma}_L , \textbf{v}_{1} \rangle = 0 \label{ceq1},\\
+        &
+        \langle \vecnb{\gamma}_L, \textbf{v}_2 \rangle = 0 \label{ceq2},\\
+        &
+        \langle \vecnb{\gamma}_L, \textbf{v}_3 \rangle = \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle \label{ceq3}, \\
+        &
+        \langle \vecnb{\gamma}_L + \vecnb{\gamma}_R - \vecnb{1}^{t}, \textbf{v}_{4} \rangle = 0 \label{ceq4}.
+    \end{align}
+    \captionof{figure}{A system of equations guaranteeing the integrity of the encoding of the witnesses}
+    \label{fig:syseqn}
+  \end{minipage}  
+\end{flushleft}
+
+
+
+
 %%%%%%%%%%%%%%%%%%
 % Constraints
 %%%%%%%%%%%%%%%%%%
-\begin{figure}[h!]
-  \begin{gather*}
-    \vecnb{\theta} \coloneqq \textbf{v}_{0}, \hspace{1cm}
-    \vecnb{\mu} \coloneqq \sum_{i=1}^{4} z^{i} \textbf{v}_i, \hspace{1cm}
-    \vecnb{\nu} \coloneqq z^4 \textbf{v}_4,\\[4pt]
-    \vecnb{\theta}^{\circ -1}[j] = 
-    \begin{cases}
-      \left(\vecnb{\theta}[j]\right)^{-1} & \text{if } \vecnb{\theta}[j] \neq 0, \\
-      0 & \text{otherwise,}
-    \end{cases} \\[4pt]
-    \vecnb{\alpha} \coloneqq \vecnb{\theta}^{\circ -1} \circ \vecnb{\nu}, \hspace{1.7cm}
-    \vecnb{\beta} \coloneqq \vecnb{\theta}^{\circ -1} \circ \vecnb{\mu},\\[5pt]
-    \delta \coloneqq z^3 \cdot \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle + \langle \vecnb{\alpha}, \vecnb{\mu}\rangle + \langle \vecnb{1}^N, \vecnb{\nu}\rangle.
-  \end{gather*}
-  \caption{Definitions of compressed constraint vectors}
-  \label{fig:conVec2}
-\end{figure}
+% \begin{figure}[h!]
+%   \begin{gather*}
+%     \vecnb{\theta} \coloneqq \textbf{v}_{0}, \hspace{1cm}
+%     \vecnb{\mu} \coloneqq \sum_{i=1}^{4} z^{i} \textbf{v}_i, \hspace{1cm}
+%     \vecnb{\nu} \coloneqq z^4 \textbf{v}_4,\\[4pt]
+%     \vecnb{\theta}^{\circ -1}[j] = 
+%     \begin{cases}
+%       \left(\vecnb{\theta}[j]\right)^{-1} & \text{if } \vecnb{\theta}[j] \neq 0, \\
+%       0 & \text{otherwise,}
+%     \end{cases} \\[4pt]
+%     \vecnb{\alpha} \coloneqq \vecnb{\theta}^{\circ -1} \circ \vecnb{\nu}, \hspace{1.7cm}
+%     \vecnb{\beta} \coloneqq \vecnb{\theta}^{\circ -1} \circ \vecnb{\mu},\\[5pt]
+%     \delta \coloneqq z^3 \cdot \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle + \langle \vecnb{\alpha}, \vecnb{\mu}\rangle + \langle \vecnb{1}^N, \vecnb{\nu}\rangle.
+%   \end{gather*}
+%   \caption{Definitions of compressed constraint vectors}
+%   \label{fig:conVec2}
+% \end{figure}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%
 % Equation system
 %%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{figure}
-  \begin{align}
-    &
-    \textsf{EQ}(\vecnb{\gamma}_L, \vecnb{\gamma}_R) = 0 \iff \nonumber\\
-    &
-    \langle \vecnb{\gamma}_L, \vecnb{\gamma}_R  \circ \textbf{v}_0 \rangle = 0 \label{ceq0},\\
-    &
-    \langle \vecnb{\gamma}_L , \textbf{v}_{1} \rangle = 0 \label{ceq1},\\
-    &
-    \langle \vecnb{\gamma}_L, \textbf{v}_2 \rangle = 0 \label{ceq2},\\
-    &
-    \langle \vecnb{\gamma}_L, \textbf{v}_3 \rangle = \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle \label{ceq3}, \\
-    &
-    \langle \vecnb{\gamma}_L + \vecnb{\gamma}_R - \vecnb{1}^{t}, \textbf{v}_{4} \rangle = 0 \label{ceq4}.
-\end{align}
-\caption{A system of equations guaranteeing the integrity of the encoding of the witnesses}
-\label{fig:syseqn}
+% \begin{figure}[b]
+%   \begin{align}
+%     &
+%     \textsf{EQ}(\vecnb{\gamma}_L, \vecnb{\gamma}_R) = 0 \iff \nonumber\\
+%     &
+%     \langle \vecnb{\gamma}_L, \vecnb{\gamma}_R  \circ \textbf{v}_0 \rangle = 0 \label{ceq0},\\
+%     &
+%     \langle \vecnb{\gamma}_L , \textbf{v}_{1} \rangle = 0 \label{ceq1},\\
+%     &
+%     \langle \vecnb{\gamma}_L, \textbf{v}_2 \rangle = 0 \label{ceq2},\\
+%     &
+%     \langle \vecnb{\gamma}_L, \textbf{v}_3 \rangle = \langle \vecnb{1}^{s+1}, \vecnb{y}^{s+1} \rangle \label{ceq3}, \\
+%     &
+%     \langle \vecnb{\gamma}_L + \vecnb{\gamma}_R - \vecnb{1}^{t}, \textbf{v}_{4} \rangle = 0 \label{ceq4}.
+% \end{align}
+% \caption{A system of equations guaranteeing the integrity of the encoding of the witnesses}
+% \label{fig:syseqn}
+% \end{figure}
+  
+%%%%%%%%%%%%%%%%%%%%
+% The protocol
+%%%%%%%%%%%%%%%%%%%%
+\newpage
+\begin{figure}[h!]
+  \caption{Argument of knowledge for $\L_{\RBmath}$}
+  \label{fig:protocol_revBP}
 \end{figure}
+\vspace{-12pt}
+\begin{mdframed}
+  \begin{itemize}[itemsep=4pt]
+    % Setup Phase
+    \item[] \textsl{Setup}($\lambda, \mathcal{L}$):
+    \\[-5pt]\rule{\textwidth}{0.4pt}\\ 
+    $\mathcal{L}(\G, q, g, h, g_t)$ as defined in (\ref{eqnRevelioPlusLanguage}),
+    \\[2pt]
+    Generate following elements randomly from $\G$
+    \\[2pt]
+    $h^{\prime} \rgen \G, \textbf{p} \rgen \G^{n+3},  \textbf{g}^{\prime} \rgen \G^{sn+s}, \textbf{h} \rgen \G^N$
+    \\[2pt]
+    Output:\hspace{1.5mm} \textsl{crs} = $(\G, q, g, h, g_t, h^{\prime}, \textbf{p}, \textbf{g}^{\prime}, \textbf{h})$
+    \vspace{2pt}
+
+    % Prover
+    \item[] $\langle \mathcal{P}(\textsl{crs, stmt, wit}), \mathcal{V}(\textsl{crs, stmt}) \rangle$ :
+    \\[-5pt]\rule{\textwidth}{0.4pt}
+
+    % \item[] $\mathcal{V}$: $u,v \rgen \Z$, $\mathcal{V} \longrightarrow \P$: $u, v$
+  
+    % \item[] $\mathcal{V} \longrightarrow \P$: $u$
+    
+    % \item[] $\P, \ \V$:
+    % \begin{enumerate}[itemsep=5pt]
+    %     \item[(i)] $\hat{I} \coloneqq \ \textbf{I}^{- \vecnb{u}^s}$
+        
+    %     \item[(ii)] For $w \in \Z_q$, write
+    %     \vspace{-4pt}
+    %     \begin{equation}
+    %       \textbf{g}_{w} \coloneqq \big[ \big((g \| g_t \| \textbf{C} \| \hat{I})^{\circ w} \circ \textbf{p}\big) \|\textbf{g}^{\prime} \big]
+    %     \end{equation}
+    % \end{enumerate}
+
+    \vspace{-4pt}
+    \item[] $\P$:\vspace{-4pt}
+    \begin{enumerate}[itemsep=5pt]
+        \item[(i)] $r_A \rgen \Z_q$
+        
+        \item[(ii)] $\textbf{g}_{0} = ( \textbf{p} \ \| \ \textbf{g}^{\prime} )$
+        
+        \item[(iii)] $A \coloneqq (h^{\prime})^{r_A} \textbf{g}_0^{\cL} \textbf{h}^{\cR}$ 
+        
+        % \item[] Note: $A = (h^{\prime})^{r_A} \textbf{g}_0^{\cL} \textbf{h}^{\cR} = (h^{\prime})^{r_A} \textbf{g}_w^{\cL} \textbf{h}^{\cR}$
+    \end{enumerate}
+  
+    \item[] $\mathcal{P} \longrightarrow \V$: $A$
+
+    \item[] $\mathcal{V}$: $u, v, w \rgen \Z_q$, $\mathcal{V} \longrightarrow \P$: $u, v, w$
+
+    % \item[] $\mathcal{V} \longrightarrow \P$: $w$
+
+    \item[] $\P, \ \V$:
+    \begin{enumerate}[itemsep=5pt]
+        \item[(i)] $\hat{I} \coloneqq \ \textbf{I}^{- \vecnb{u}^s}$
+        
+        \item[(ii)] $\textbf{g}_{w} \coloneqq \big[ \big((g \| g_t \| \textbf{C} \| \hat{I})^{\circ w} \circ \textbf{p}\big) \|\textbf{g}^{\prime} \big]$
+    \end{enumerate}
+      
+    \item[] $\mathcal{P}$:
+    \begin{enumerate}[itemsep=5pt]
+        \item[(i)] $r_S \rgen \Z_q, \ \textbf{s}_L \rgen \Z_q^N, \ \textbf{s}_R \in \Z_q^N$ s.t. $\forall j \in [N]$ 
+        \vspace{-3mm}
+        \item[] $\textbf{s}_R[j] = 
+        \begin{cases}
+          s_j \rgen \Z_q & \text{if } n+4 \le j \le N-s ,\\
+          0 & \text{otherwise}
+        \end{cases}$ 
+        \item[(ii)] $S = (h^{\prime})^{r_S} \textbf{g}_w^{\textbf{s}_L} \textbf{h}^{\textbf{s}_R}$ 
+    \end{enumerate}
+    
+    \item[] $\mathcal{P} \longrightarrow \V$: $S$
+    
+    \item[] $\mathcal{V}$: $y, z \rgen \Z_q$, $\mathcal{V} \longrightarrow \P$: $y, z$
+    
+    % \item[] $\mathcal{V} \longrightarrow \P$: $y, z$
+    
+    \item[] $\mathcal{P}$:
+    \begin{enumerate}[itemsep=5pt]
+      \item[(i)] Define the following polynomials in $\Z^{N}_q[X]$
+      % as a function of $X$ in $\Z^{N}_q[X]$:
+      \begin{align*}
+          l(X) &\coloneqq \ \cL + \boldsymbol{\alpha} + \textbf{s}_L \cdot X \\
+          r(X) &\coloneqq \ \vecnb{\theta} \circ \ (\cR + \textbf{s}_R \cdot X) + \vecnb{\mu}\\
+          t(X) &\coloneqq \langle l(X),r(X) \rangle = t_2 X^2 + t_1 X + t_0
+      \end{align*}
+      for $t_2, t_1, t_0 \in \Z_q$. Also, $t_0 = \delta$.
+        
+      \item[(ii)] $\tau_1, \tau_2 \rgen \Z_q$ 
+      
+      \item[(iii)] $T_1 = g^{t_1}h^{\tau_1}, T_2 = g^{t_2}h^{\tau_2}$ 
+    \end{enumerate}
+        
+    \item[] $\mathcal{P} \longrightarrow \V$: $T_1, T_2$
+  
+    \item[] $\mathcal{V}$: $x \rgen \Z_q$ , $\mathcal{V} \longrightarrow \P$: $x$
+
+    % \item[] $\mathcal{V} \longrightarrow \P$: $x$
+
+    \item[] $\mathcal{P}$: 
+    \begin{enumerate}[itemsep=5pt]
+        \item[(i)] $\lvec \coloneqq l(x) = \ \cL + \vecnb{\alpha} + \textbf{s}_L \cdot x \ \in \Z_q^N$
+        
+        \item[(ii)] $\rvec \coloneqq r(x) = \ \vecnb{\theta} \circ \ (\cR + \textbf{s}_R \cdot x) + \vecnb{\mu} \ \in \Z^N_q$
+        
+        \item[(iii)] $\hat{t} \coloneqq \langle \lvec, \rvec \rangle \ \in \Z_q$
+        
+        \item[(iv)] $\tau_x \coloneqq \tau_2x^2 + \tau_1x$
+        
+        \item[(v)] $r \coloneqq r_A + r_Sx$
+        
+    \end{enumerate}
+    
+    \item[] $\mathcal{P} \longrightarrow \V$: $\lvec, \rvec, \hat{t}, \tau_x, r$
+    
+    \item[] $\mathcal{V}$: 
+    \begin{enumerate}[itemsep=5pt]
+        \labelText{\item[(i)]}{label:veq1}
+        $\hat{t} \stackrel{?}{=} \langle \lvec, \rvec \rangle$ \hfill{{\small \textit{// $\hat{t}$ was computed correctly}}}
+
+        \labelText{\item[(ii)]}{label:veq2}
+        $g^{\hat{t}}h^{\tau_x} \stackrel{?}{=} g^{\delta} T_1^{x} T_2^{x^2}$ \hfill{{\small \textit{// $\hat{t}$ satisfies $t_0 + t_1x + t_2x^2$}}} 
+
+        \labelText{\item[(iii)]}{label:veq3}
+        $(h^{\prime})^{r} \textbf{g}^{\lvec}_w \textbf{h}^{\vecnb{\theta}^{\circ -1} \circ \rvec} \stackrel{?}{=} AS^{x} \textbf{g}^{\vecnb{\alpha}}_w \textbf{h}^{\vecnb{\beta}}$ \hfill{{\small \textit{// Check if $\lvec = l(x)$ and $\rvec = r(x)$}}}
+        
+    \end{enumerate}
+  
+  \end{itemize}
+\end{mdframed}
+
 
   
 % % \vspace{2pt}
@@ -755,14 +896,34 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   \section{Performance}
   We compare the performance of our proof of reserves protocol with \R which was the first MimbleWimble proof of reserves protocol \cite{Dutta2019b}.
   In \Rw, an exchange publishes an anonymity set $\C_{\text{anon}} \subseteq \C_{\text{utxo}}$ such that $\C_{\text{own}} \subseteq \C_{\text{anon}}$. 
-  In \Rplus, the anonymity set is always equal to $\C_{\text{utxo}}$. For a fair comparison, we set $\C_{\text{anon}} = \C_{\text{utxo}}$ in \Rw. Let $n = \left| \C_{\text{utxo}} \right|$ and $s = \left|\C_{\text{own}}\right|$. \R proof sizes are $\mathcal{O}(n)$ while \RPlus proof sizes are $\mathcal{O}(s+\log_2(sn))$. The logarithmic dependence of the \RPlus proof size on the UTXO set size $n$ is the main advantage of \RPlus over \Rw.
+  In \Rplus, the anonymity set is always equal to $\C_{\text{utxo}}$. For a fair comparison, we set $\C_{\text{anon}} = \C_{\text{utxo}}$ in \Rw. Let $n = \left| \C_{\text{utxo}} \right|$ and $s = \left|\C_{\text{own}}\right|$. 
+  \R proof sizes are $\mathcal{O}(n)$ while \RPlus proof sizes are $\mathcal{O}(s+\log_2(sn))$. 
+  The exact proof sizes are:
+
+  \begin{table}[h!]
+    \centering
+    \begin{tabular}{ | m{2.5cm} | m{4cm}| m{4cm} | } 
+    \hline
+     & \#Elements in $\G$ & \#Elements in $\Z_q$ \\ 
+    \hline
+    \R & $n+1$ & $5n$ \\ 
+    \hline
+    \RB & $s + 2\lceil\text{log}_2N\rceil + 4$ & $5$ \\ 
+    \hline
+    \end{tabular}
+    \caption{Test}
+    \label{table:perf}
+  \end{table}
+    
+  \noindent
+  % \begin{align*}
+  %    & & & \hspace{-1cm} \text{\#Elements in } \G & & \text{\#Elements in } \Z_q \\
+  %    & \R & & \hspace{-1cm} n+1 & & 5n \\
+  %    & \text{\Rplus}  & & \hspace{-1cm} s + 2\lceil\text{log}_2N\rceil + 4 & & 5
+  % \end{align*} 
+  where $N = sn + n + s + 3$. The logarithmic dependence of the \RPlus proof size on the UTXO set size $n$ is the main advantage of \RPlus over \Rw.
   This is illustrated in Figure \ref{subfig:revBP1} where we compare the proof sizes of the \R and \RPlus protocols as a function of $n$ for $s=20$. 
   For a UTXO set size of $2^{17}$, the \RPlus proof is a mere $2.9$ KB compared to a 300 MB \R proof.
-  %The exact proof sizes are:
-  %\begin{align*}
-  %    & \R & & \hspace{-1cm} 7n+1 \\
-  %    & \text{\Rplus}  & & \hspace{-1cm} s + 2\lceil\text{log}_2(sn + n + 2s + 2)\rceil + 10
-  %\end{align*}
   
   %\subsection{Running Time}
   % We note that the main component of the \RPlus proof generation algorithm is a Bulletproofs protocol \cite{Bunz2018} used to generate the argument $\Uppi_{\textsf{Rev} \plus}$. The major difference is in the construction of the base vector used for computing Pedersen commitments to the secret vectors which results in more number of inner-product based constraint equations. However, since the basic framework remains the same, we can estimate the running time for generating the argument $\Uppi_{\textsf{Rev} \plus}$ using Bulletproofs with appropriate input sizes.
@@ -1198,7 +1359,35 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   Also, since the base vector used in \RB depends on the tag vector published by an exchange, \RB proofs of multiple exchanges on the same blockchain state cannot be aggregated.  
   Lastly, if exchanges are required to generate proofs of reserves after every $K$ blocks are mined, the proof generation time needs to be less than $K$ minutes\footnote{The average inter-block time is one minute in both Grin and Beam (the two most popular MimbleWimble-based cryptocurrencies).}.
   In such cases, proofs with smaller running times would be preferred.
+  We conclude by summarizing the trade-offs in using \R and \RB in Table \ref{table:rb_vs_r}.
   
+  \renewcommand{\arraystretch}{1.3}
+  \begin{table}[h!]
+    \centering
+    \begin{tabular}{ |L{4cm}|C{4cm}|C{4cm}| } 
+      \hline
+      & \RPlus &  \R  \\ 
+      \hline
+      Proof size & $\mathcal{O}(\text{log}(sn)+s)$ & $\mathcal{O}(n)$ \\ 
+      \hline
+      Gen/Ver times & $\mathcal{O}(sn)$ & $\mathcal{O}(n)$ \\ 
+      \hline
+      Scalability &  \pro & \con \\
+      \hline 
+      Blockchain state & \pro & \con \\
+      \hline
+      Output privacy & \pro & \pro \\
+      \hline
+      Non-collusion & \pro & \pro \\
+      \hline
+      Inflation resistance & \pro & \pro \\
+      \hline
+    \end{tabular}
+  \caption{Summary of performance comparison between \R and \RB}
+  \label{table:rb_vs_r}
+  \end{table}
+  \renewcommand{\arraystretch}{1}
+
   % The language of \R as well as \RB protocols is based on proving the ownership of $s\text{-out-of-}n$ outputs from an anonymity set.
   % This ensures the privacy of exchange-owned outputs in \R and \RB protocols. 
   % % The exchanges have flexibility in the choice of anonymity set in case of \Rw, while for \RBw, the entire UTXO set corresponding to a particular blockchain state forms the anonymity set.
@@ -1215,10 +1404,10 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   An exchange has to make a trade-off between scalability and performance and choose which protocol suits their needs better: \RB with smaller proof size and large generation times or \R with larger proof sizes and faster generation times. 
   
   
-  \section*{Acknowledgements}
-  We would like to thank the anonymous reviewers for their insightful comments which helped improve this paper.
-  We also acknowledge the support of the Bharti Centre for Communication at IIT Bombay. 
-  We thank Piyush Bagad (Wadhwani AI) for help with running the simulations.
+  % \section*{Acknowledgements}
+  % We would like to thank the anonymous reviewers for their insightful comments which helped improve this paper.
+  % We also acknowledge the support of the Bharti Centre for Communication at IIT Bombay. 
+  % We thank Piyush Bagad (Wadhwani AI) for help with running the simulations.
   
   % \section{Improved \RPlus}
   
@@ -1274,7 +1463,7 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   % and $\textbf{g}^{\prime} \rgen \G^{(sn^{\prime} + s)}$, we construct the base  and exponent (secret) vector as 
   % \begin{align}
   %   \textbf{g}_w &= \big((g \| g_t \| \textbf{R} \| \hat{I})^{\circ w} \circ \textbf{p}\big)  \| \textbf{g}^{\prime} & \in \G^{N} \label{label:Igenerator}\\
-  %   \textbf{c}_L &= (\eta_1 \| \eta_2 \| \hat{\textbf{e}} \| 1 \| \Emat \| \textbf{r}) & \in \Z_q^{N}
+  %   \cL &= (\eta_1 \| \eta_2 \| \hat{\textbf{e}} \| 1 \| \Emat \| \textbf{r}) & \in \Z_q^{N}
   % \end{align}
   
   % \noindent where $\Emat = (\textbf{e}_{i_1} \| \dots \| \textbf{e}_{i_s})$ and $N = 2sn^{\prime} + s +3$. 
@@ -1361,7 +1550,7 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   %       \labelText{\textbf{Fig. 7.} Definitions of constraint vectors (Dots mean zero vectors and $v \rgen \Z_q\setminus \{0\}$).}{label:conVec1_2}
   % \end{center}
   
-  % The \Iproto protocol can be realised by running \proto described in Protocol (\ref{label:proto1}) with the base vector $\textbf{g}_w$ (equation (\ref{label:Igenerator})), exponent vectors $\textbf{c}_L, \textbf{c}_R$ (Fig. \hyperref[label:witness_2]{6}) and constraint vectors defined by Fig. (\hyperref[label:conVec1_2]{7}).  
+  % The \Iproto protocol can be realised by running \proto described in Protocol (\ref{label:proto1}) with the base vector $\textbf{g}_w$ (equation (\ref{label:Igenerator})), exponent vectors $\cL, \cR$ (Fig. \hyperref[label:witness_2]{6}) and constraint vectors defined by Fig. (\hyperref[label:conVec1_2]{7}).  
   % % Note that the set \textsl{Idx} (which is $\mathcal{O}(s)$) is also published as a part of \Iproto protocol.
   
   % \begin{theorem}

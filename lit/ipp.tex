@@ -1,0 +1,370 @@
+\section{Improved Inner-Product Argument}
+\label{sec:iipa}
+
+% \subsection{Building towards Inner-Product Argument}
+% \label{subsec:iipa/ov}
+We will define Inner-Product argument which is a proof construction for proving to a verifier that the prover knows two vectors which are hidden in a Pedersen commitment and the the inner product of those two vectors is known. 
+% We will first provide simpler protocols which are not necessarily zero-knowledge but our ultimate aim remains to give an inner-product protocol which is efficient and zero knowledge.\\
+
+The inputs to the inner-product argument are independent generators $\textbf{g}, \textbf{h} \in \mathbb{G}^n$, $P\in \G$ and a scalar $c \in \Z_q$. $P$ is a binding vector commitment to $\textbf{a}, \textbf{b}$. 
+The argument lets the prover convince a verifier that the prover knows two vectors $\textbf{a}, \textbf{b} \in \Z_q^n$ such that 
+\begin{equation*}
+    P = \textbf{g}^{\textbf{a}} \textbf{h}^{\textbf{b}} \ \wedge \ 
+    c = \langle \textbf{a},\textbf{b} \rangle
+\end{equation*}
+The inner product argument is an efficient proof system for the language:
+\begin{align}
+    \mathcal{L}_{\textsf{IP}} &=
+    \{ ( \underbrace{\textbf{g}, \textbf{h} \in \mathbb{G}^n, P \in \mathbb{G}, c \in \Z_q}_{\textsl{crs}};\
+    \underbrace{\textbf{a}, \textbf{b} \in \Z_q^{n}}_{\textsl{wit}}):\
+    \underbrace{P = \textbf{g}^{\textbf{a}}\textbf{h}^{\textbf{b}} \wedge c = \langle \textbf{a}, \textbf{b} \rangle}_{\textsl{stmt}} \}
+    \label{eq:ipa1}
+\end{align}
+Here, \textsl{crs, stmt, wit} are common reference string, statement and witness respectively as defined in Section \ref{scn:notation}.
+Clearly, the simplest proof system for (\ref{eq:ipa1}) is: $\mathcal{P}$ sends $\mathcal{V}$ $(\textbf{a},\textbf{b}) \in \Z_q^{n}$, requiring to send $2n$ elements to $\mathcal{V}$. We wish to build an efficient proof which requires much less elements to be exchanged. Recall, the communication cost directly affects \textit{efficiency} of a protocol.\\
+
+Note that the witness-CRS relation in (\ref{eq:ipa1}) is essentially an \texttt{AND} of two different relations. To simplify things to start with the inner-product argument,
+we propose to design a proof system for the language:
+\begin{align}
+    \mathcal{L}_{\textsf{IP\_mod}} &= 
+        \{ ( \underbrace{\textbf{g}, \textbf{h} \in \mathbb{G}^n, u, P \in \mathbb{G}}_{\textsl{crs}};\
+        \underbrace{\textbf{a}, \textbf{b} \in \Z_q^{n}}_{\textsl{wit}}):\
+        \underbrace{P = \textbf{g}^{\textbf{a}}\textbf{h}^{\textbf{b}} \cdot u^{\langle \textbf{a}, \textbf{b} \rangle}}_{\textsl{stmt}} \}
+        \label{eq:ipa2}
+\end{align}
+We will first show a protocol or a proof system for language defined in (\ref{eq:ipa2}) and then prove that the same proof system gives a proof system for language in (\ref{eq:ipa1}) with same complexity. 
+Define a hash function $H: \Z_{q}^{2n+1} \rightarrow \G$ such that for input vectors $\textbf{a}_1, \textbf{a}_1^{\prime}, \textbf{b}_1, \textbf{b}_1^{\prime} \in \Z_q^{n/2}, c \in \Z_q$
+\begin{align}
+    H(\textbf{a}_1, \textbf{a}_1^{\prime}, \textbf{b}_1, \textbf{b}_1^{\prime}, c) 
+    & :=
+    \textbf{g}_{[:n/2]}^{\textbf{a}_1} \cdot 
+    \textbf{g}_{[n/2:]}^{\textbf{a}_1^{\prime}}\cdot
+    \textbf{h}_{[:n/2]}^{\textbf{b}_1} \cdot 
+    \textbf{h}_{[n/2:]}^{\textbf{b}_1^{\prime}}\cdot
+    u^c \ \in \mathbb{G}
+\end{align}
+
+Further, we notice that in (\ref{eq:ipa2}), we can write $P$ as\blfootnote{We are denoting the first and second halves of a vector $\textbf{a}$ by color coding to simplify visualization, $\textcolor{blue}{\textbf{a}_{[:n^{\prime}]}}$ as the first half and $\textcolor{red}{\textbf{a}_{[n^{\prime}:]}}$ by second half.}: 
+\begin{align*}
+    n^{\prime}
+    &=
+    n/2, \ \textbf{a} = (\textcolor{blue}{\textbf{a}_{[:n^{\prime}]}}, \textcolor{red}{\textbf{a}_{[n^{\prime}:]}}),  \ \textbf{b} = (\textcolor{blue}{\textbf{b}_{[:n^{\prime}]}}, \textcolor{red}{\textbf{b}_{[n^{\prime}:]}}),\\
+    P 
+    &= 
+    H(\textcolor{blue}{\textbf{a}_{[:n^{\prime}]}}, \textcolor{red}{\textbf{a}_{[n^{\prime}:]}}, 
+    \textcolor{blue}{\textbf{b}_{[:n^{\prime}]}}, \textcolor{red}{\textbf{b}_{[n^{\prime}:]}}, \langle \textbf{a}, \textbf{b} \rangle)
+\end{align*}
+We also note that $H$ is additively homomorphic in its inputs, i.e
+\begin{multline*}
+    H(\textbf{a}_1, \textbf{a}_1^{\prime}, \textbf{b}_1, \textbf{b}_1^{\prime}, c_1)\cdot 
+    H(\textbf{a}_2, \textbf{a}_2^{\prime}, \textbf{b}_1, \textbf{b}_2^{\prime}, c_2) 
+    =\\ 
+    \left(\textbf{g}_{[:n/2]}^{\textbf{a}_1} \cdot 
+    \textbf{g}_{[n/2:]}^{\textbf{a}_1^{\prime}}\cdot
+    \textbf{h}_{[:n/2]}^{\textbf{b}_1} \cdot 
+    \textbf{h}_{[n/2:]}^{\textbf{b}_1^{\prime}}\cdot
+    u^{c_1}\right)\cdot
+    \left(\textbf{g}_{[:n/2]}^{\textbf{a}_2} \cdot 
+    \textbf{g}_{[n/2:]}^{\textbf{a}_2^{\prime}}\cdot
+    \textbf{h}_{[:n/2]}^{\textbf{b}_2} \cdot 
+    \textbf{h}_{[n/2:]}^{\textbf{b}_2^{\prime}}\cdot
+    u^{c_2}\right)
+\end{multline*}
+\begin{align*}
+\implies
+    H(\textbf{a}_1, \textbf{a}_1^{\prime}, \textbf{b}_1, \textbf{b}_1^{\prime}, c_1) \ \cdot
+    &
+    H(\textbf{a}_2, \textbf{a}_2^{\prime}, \textbf{b}_1, \textbf{b}_2^{\prime}, c_2)\\ \vspace{10mm}
+    &=
+    \left(\textbf{g}_{[:n/2]}^{\textbf{a}_1 + \textbf{a}_2} \cdot 
+    \textbf{g}_{[n/2:]}^{\textbf{a}_1^{\prime} + \textbf{a}_2^{\prime}}\cdot
+    \textbf{h}_{[:n/2]}^{\textbf{b}_1 + \textbf{b}_2} \cdot 
+    \textbf{h}_{[n/2:]}^{\textbf{b}_1^{\prime} + \textbf{b}_2^{\prime}}\cdot
+    u^{c_1+c_2}\right)\\\vspace{10mm}
+    &=
+    H(\textbf{a}_1+\textbf{a}_2, \textbf{a}_1^{\prime} + \textbf{a}_2^{\prime}, \textbf{b}_1+\textbf{b}_2, \textbf{b}_1^{\prime} + \textbf{b}_2^{\prime}, c_1+c_2)
+\end{align*}
+We now describe a protocol for the language $\mathcal{L}_{\textsf{IP\_mod}}$ (\ref{eq:ipa2}) in argument of knowledge \ref{fig:algo1}.
+
+
+\subsection{Inner-Product Argument}
+\label{subsec:iipa/ipa}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{figure}[h!]
+    \caption{Argument of knowledge for $\L_{\textsf{IP\_mod}}$}
+    \label{fig:algo1}
+\end{figure}
+\begin{mdframed}[skipabove=\topsep]
+    \begin{itemize}[itemsep=4pt]
+        % Setup Phase
+        \item[] \textsl{Setup}($\lambda, \mathcal{L}_{\textsf{IP\_mod}}$):
+        \\[-5pt]\rule{\textwidth}{0.4pt}\\ 
+        Generate following elements randomly from $\G$: $\ \textbf{g} \rgen \G^{n}, \textbf{h} \rgen \G^n, u \rgen \G$
+        \\[2pt]
+        \textsl{crs} = $(\G, q, \textbf{g}, \textbf{h}, u, P)$, \textsl{wit} = $(\textbf{a}, \textbf{b}) \in \Z_q^n$, \textsl{stmt}: $P = \textbf{g}^\textbf{a} \cdot \textbf{h}^\textbf{b} \cdot u^{\langle \textbf{a},\textbf{b} \rangle}$
+        \vspace{2pt}
+    
+        % Prover
+        \item[] $\langle \mathcal{P}(\textsl{crs, stmt, wit}), \mathcal{V}(\textsl{crs, stmt}) \rangle$ :
+        \\[-5pt]\rule{\textwidth}{0.4pt}
+    
+        \vspace{-4pt}
+        \item[] $\P$:\vspace{-4pt}
+        \begin{enumerate}[itemsep=5pt]
+            \item[(i)] $n^{\prime} = n/2$ 
+            
+            \item[(ii)] $L = H(\textbf{0}^{n^{\prime}}, 
+            \textcolor{blue}{\textbf{a}_{[:n^{\prime}]}},
+            \textcolor{red}{\textbf{b}_{[n^{\prime}:]}},
+            \textbf{0}^{n^{\prime}},
+            \langle \textcolor{blue}{\textbf{a}_{[:n^{\prime}]}},
+            \textcolor{red}{\textbf{b}_{[n^{\prime}:]}}
+            \rangle)$
+
+            \item[(iii)] $R = H(\textcolor{red}{\textbf{a}_{[n^{\prime}:]}},
+            \textbf{0}^{n^{\prime}}, 
+            \textbf{0}^{n^{\prime}},
+            \textcolor{blue}{\textbf{b}_{[n^{\prime}:]}},
+            \langle \textcolor{red}{\textbf{a}_{[n^{\prime}:]}},
+            \textcolor{blue}{\textbf{b}_{[n^{\prime}:]}}
+            \rangle)$
+        \end{enumerate}
+      
+        \item[] $\mathcal{P} \longrightarrow \V$: $L,R \in \G$
+    
+        \item[] $\mathcal{V}$: $x \rgen \Z_q$, $\mathcal{V} \longrightarrow \P$: $x$
+    
+        % \item[] $\mathcal{V} \longrightarrow \P$: $w$
+    
+        \item[] $\P$:
+        \begin{enumerate}[itemsep=5pt]
+            \item[(i)] $\textbf{a}^{\prime} = x \cdot
+            \textcolor{blue}{\textbf{a}_{[:n^{\prime}]}} + x^{-1}\cdot
+            \textcolor{red}{\textbf{a}_{[n^{\prime}:]}}$
+
+            \item[(ii)] $\textbf{b}^{\prime} = x^{-1} \cdot
+            \textcolor{blue}{\textbf{b}_{[:n^{\prime}]}} + x\cdot
+            \textcolor{red}{\textbf{b}_{[n^{\prime}:]}}$
+        \end{enumerate}
+        
+        \item[] $\mathcal{P} \longrightarrow \V$: $\textbf{a}^{\prime}, \textbf{b}^{\prime} \in \Z_q^{n^{\prime}}$
+        
+        \item[] $\mathcal{V}$: 
+        \begin{enumerate}[itemsep=5pt]
+            \item[(i)] $P^{\prime} = L^{(x^2)}\cdot P \cdot R^{(x^{-2})}$
+    
+            \labelText{\item[(ii)]}{label:veq1_ipma}
+            $P^{\prime} \stackrel{?}{=} H(x^{-1}\textbf{a}^{\prime}, x\textbf{a}^{\prime},x\textbf{b}^{\prime}, x^{-1}\textbf{b}^{\prime}, 
+            \langle \textbf{a}^{\prime}, \textbf{b}^{\prime} \rangle)$ \hfill{\footnotesize \textit{// Verification equation}}
+        \end{enumerate}
+      
+    \end{itemize}
+\end{mdframed}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\vspace{1cm}
+The verifier is convinced because indeed the left hand size of the verification equation (\ref{label:veq1_ipma}) by the verifier can be written as:
+\begin{multline*}
+    L^{x^2}\cdot P \cdot R^{x^{-2}} = H(\textcolor{blue}{\textbf{a}_{[:n^{\prime}]}} 
+    + x^{-2}
+    \textcolor{red}{\textbf{a}_{[n^{\prime}:]}},
+    x^2\textcolor{blue}{\textbf{a}_{[:n^{\prime}]}} 
+    +
+    \textcolor{red}{\textbf{a}_{[n^{\prime}:]}},\\
+    x^2\textcolor{red}{\textbf{b}_{[n^{\prime}:]}} 
+    +
+    \textcolor{blue}{\textbf{b}_{[:n^{\prime}]}},
+    \textcolor{red}{\textbf{b}_{[n^{\prime}:]}} 
+    + x^{-2}
+    \textcolor{blue}{\textbf{b}_{[:n^{\prime}]}},
+    \langle \textbf{a}^{\prime},\textbf{b}^{\prime} \rangle
+    )
+\end{multline*}
+The key features of this approach are listed below.
+\begin{enumerate}
+    \item This proof system requires sending $n+2$ elements.
+        \item To extract a valid witness $\textbf{a}, \textbf{b} \in \Z^n_q$ from a successful prover, we need to rewind the prover three times. After the prover sends $L, R$ we rewind the prover three times to obtain three tuples $(x_i, \textbf{a}_i^{\prime}, \textbf{b}_i^{\prime}) \ \text{for} \ i=1,2,3$ such that for all distinct $x_i$:  
+        \begin{equation}
+            L^{(x_i^2)}\cdot P \cdot L^{({-x}_i^2)}
+            =
+            H(x^{-1}\textbf{a}^{\prime}_i, x_i\textbf{a}^{\prime}_i, x_i\textbf{b}^{\prime}, x_i^{-1}\textbf{b}^{\prime}_i, 
+            \langle \textbf{a}^{\prime}, \textbf{b}^{\prime}_i \rangle)
+        \end{equation}
+        
+    \item We can now find $\nu_1, \nu_2, \nu_3 \in \Z_q$ such that,
+    \begin{equation*}
+        \sum_{i=1}^{3}x_i^2 \nu_i=0, \quad 
+        \sum_{i=1}^{3}\nu_i = 1, \quad
+        \sum_{i=1}^{3}x_i^{-2} \nu_i=0
+    \end{equation*}
+    
+    \item Thus, $\textbf{a}, \textbf{b}$ can be found by computing:
+    \begin{align*}
+        \textbf{a} &= \sum_{i=1}^{3}(\nu_i \cdot x_i^{-1} \textbf{a}_i^{\prime} \ \| \ \nu_i \cdot x_i^{1} \textbf{a}_i^{\prime}) \in \Z_q^n\\
+        \textbf{b} &= \sum_{i=1}^{3}(\nu_i \cdot x_i^{-1} \textbf{b}_i^{\prime} \ \| \ \nu_i \cdot x_i^{1} \textbf{b}_i^{\prime}) \in \Z_q^n
+    \end{align*}
+        
+    \item Can we still improve? Observe that the test in the verification equation (\ref{label:veq1_ipma}) is equivalent to:
+    \begin{align*}
+    P^{\prime} \stackrel{?}{=} 
+    \big(
+    \textbf{g}^{x^{-1}}_{[:n^{\prime}]} \circ \textbf{g}^x_{[n^{\prime}:]}
+    \big)^{\textbf{a}^{\prime}}
+    \cdot
+    \big(
+    \textbf{h}^x_{[:n^{\prime}]} \circ \textbf{h}^{x^{-1}}_{[n^{\prime}:]}
+    \big)^{\textbf{b}^{\prime}}
+    \cdot 
+    u^{\langle \textbf{a}^{\prime},\textbf{b}^{\prime} \rangle}
+    \end{align*}
+
+    \item Thus the prover can recursively engage in an inner-product argument for $P^{\prime}$ with respect to generators:
+    \begin{equation*}
+        (\textbf{g}^{x^{-1}}_{[:n^{\prime}]} \circ \textbf{g}^x_{[n^{\prime}:]}, \textbf{h}^x_{[:n^{\prime}]} \circ \textbf{h}^{x^{-1}}_{[n^{\prime}:]},u)
+    \end{equation*}
+
+    \item We hope to get a total communication of Protocol 2 to be only $2\lceil \text{log}_2 (n) \rceil$ elements in $\mathbb{G}$ plus 2 elements in $\Z_q$. Let's see how we go about doing it in the next section.
+    
+\end{enumerate}
+
+
+\subsection{Recursive Inner-Product Argument}
+\label{subsec:iipa/recursion}
+
+\begin{figure}[h!]
+    \caption{Improved Inner-Product Argument for $\L_{\textsf{IP\_mod}}$}
+    \label{algo2}
+\end{figure}
+\begin{mdframed}[skipabove=\topsep]
+    \begin{itemize}[itemsep=4pt]
+        % Setup Phase
+        \item[] \textsl{Setup}($\lambda, \mathcal{L}_{\textsf{IP\_mod}}$):
+        \\[-5pt]\rule{\textwidth}{0.4pt}\\ 
+        Generate following elements randomly from $\G$: $\ \textbf{g} \rgen \G^{n}, \textbf{h} \rgen \G^n, u \rgen \G$
+        \\[2pt]
+        \textsl{crs} = $(\G, q, \textbf{g}, \textbf{h}, u, P)$, \textsl{wit} = $(\textbf{a}, \textbf{b}) \in \Z_q^n$, \textsl{stmt}: $P = \textbf{g}^\textbf{a} \cdot \textbf{h}^\textbf{b} \cdot u^{\langle \textbf{a},\textbf{b} \rangle}$
+        \vspace{2pt}
+    
+        % Prover
+        \item[] $\langle \mathcal{P}(\textsl{crs, stmt, wit}), \mathcal{V}(\textsl{crs, stmt}) \rangle$ :
+        \\[-5pt]\rule{\textwidth}{0.4pt}
+
+        \vspace{-4pt}
+        \item[] $\P$: If $n^{\prime} = 1$: \vspace{-4pt}
+        
+        \item[] $\mathcal{P} \longrightarrow \V$: $a,b \in \Z_q$
+        
+        \vspace{-4pt}
+        \item[] $\mathcal{V}$: \vspace{-4pt}
+        \begin{enumerate}[itemsep=5pt]
+            \item[(i)] $c = a \cdot b$
+    
+            \labelText{\item[(ii)]}{label:veq1_iipa}
+            $P \stackrel{?}{=} g^a h^b u^c$ \hfill{\footnotesize \textit{// Single exponentiation verification equation}}
+        \end{enumerate}
+    
+        \vspace{-4pt}
+        \item[] $\P$: Else $n^{\prime} > 1$: \vspace{-4pt}
+        \begin{enumerate}[itemsep=5pt]
+            \item[(i)] $n^{\prime} = n/2$ where $n = |\textbf{g}|$ 
+            
+            \item[(ii)] $c_L = \langle \textcolor{blue}{\textbf{a}_{[:n^{\prime}]}},
+            \textcolor{red}{\textbf{b}_{[n^{\prime}:]}}
+            \rangle \in \Z_q$, 
+
+            \item[(iii)] $c_R = \langle \textcolor{red}{\textbf{a}_{[n^{\prime}:]}},
+            \textcolor{blue}{\textbf{b}_{[n^{\prime}:]}}
+            \rangle \in \Z_q$
+
+            \item[(iv)] $L = \textbf{g}^{\textcolor{blue}{\textbf{a}_{[:n^{\prime}]}}}_{[n^{\prime}:]} 
+            \cdot \textbf{h}^{\textcolor{red}{\textbf{b}_{[n^{\prime}:]}}}_{[:n^{\prime}]} \cdot u^{c_L} \in \mathbb{G}$
+ 
+            \item[(v)] $R = \textbf{g}^{\textcolor{red}{\textbf{a}_{[n^{\prime}:]}}}_{[:n^{\prime}]} 
+            \cdot \textbf{h}^{\textcolor{blue}{\textbf{b}_{[n^{\prime}:]}}}_{[n^{\prime}:]} \cdot u^{c_R} \in \mathbb{G}$
+        \end{enumerate}
+      
+        \item[] $\mathcal{P} \longrightarrow \V$: $L,R \in \G$
+    
+        \item[] $\mathcal{V}$: $x \rgen \Z_q$, $\mathcal{V} \longrightarrow \P$: $x$
+    
+        % \item[] $\mathcal{V} \longrightarrow \P$: $w$
+
+        \item[] $\P, \ \V$:
+        \begin{enumerate}[itemsep=5pt]
+            \item[(i)] $\textbf{g}^{\prime} = \textbf{g}^{x^{-1}}_{[:n^{\prime}]} \circ \textbf{g}^x_{[n^{\prime}:]} \in \mathbb{G}^{\prime}$
+
+            \item[(ii)] $\textbf{h}^{\prime} = \textbf{h}^x_{[:n^{\prime}]} \circ \textbf{h}^{x^{-1}}_{[n^{\prime}:]} \in \mathbb{G}^{\prime}$
+
+            \item[(iii)] $P^{\prime} = L^{x^2}PR^{x^{-2}} \in \mathbb{G}$
+        \end{enumerate}
+    
+        \item[] $\P$:
+        \begin{enumerate}[itemsep=5pt]
+            \item[(i)] $\textbf{a}^{\prime} = x \cdot
+            \textcolor{blue}{\textbf{a}_{[:n^{\prime}]}} + x^{-1}\cdot
+            \textcolor{red}{\textbf{a}_{[n^{\prime}:]}}
+            \in \Z^{n^{\prime}}_q$
+
+            \item[(ii)] $\textbf{b}^{\prime} = x^{-1} \cdot
+            \textcolor{blue}{\textbf{b}_{[:n^{\prime}]}} + x\cdot
+            \textcolor{red}{\textbf{b}_{[n^{\prime}:]}}
+            \in \Z^{n^{\prime}}_q$
+        \end{enumerate}
+
+        \item[] Set \textsl{crs'} = $(\G, q, \textbf{g}^{\prime}, \textbf{h}^{\prime}, u, P^{\prime})$, \textsl{wit'} = $(\textbf{a}^{\prime}, \textbf{b}^{\prime}) \in \Z_q^n$, \textsl{stmt'}: $P^{\prime} = (\textbf{g}^{\prime})^{\textbf{a}^{\prime}} \cdot (\textbf{h}^{\prime})^{\textbf{b}^{\prime}} \cdot u^{\langle \textbf{a}^{\prime},\textbf{b}^{\prime} \rangle}$
+      
+        \item[] Run Protocol \ref{algo2} with $\langle \mathcal{P}(\textsl{crs', stmt', wit'}), \mathcal{V}(\textsl{crs', stmt'}) \rangle$  \hfill{\footnotesize \textit{// Recursion step}}
+      
+    \end{itemize}
+\end{mdframed}
+
+In the above recursive inner-product protocol, the resulting depth is of the order of $ \text{log}_2(n)$. The total communication in this protocol is $2 \times \lceil \text{log}_2(n) \rceil$ elements in $\G$ and $2$ elements in $\Z_q$, i.e the prover sends the following in the specified order:
+\begin{equation*}
+    (L_1, R_1), \dots, (L_{\text{log}_2(n)}, R_{\text{log}_2(n)}), a, b
+\end{equation*}
+Now, coming back to the language defined in (\ref{eq:ipa1}), we now are in an position to design a proof system for (\ref{eq:ipa1}). 
+The improved inner product protocol for the relation (\ref{eq:ipa1}) is presented in Figure \ref{algo3}.
+\vspace{0.2cm}
+
+\begin{figure}[h!]
+    \caption{Improved Inner-Product Argument for $\L_{\textsf{IP}}$ (\ref{eq:ipa1}) }
+    \label{algo3}
+\end{figure}
+\begin{mdframed}
+    \begin{itemize}[itemsep=4pt]
+        % Setup Phase
+        \item[] \textsl{Setup}($\lambda, \mathcal{L}_{\textsf{IP}}$):
+        \\[-5pt]\rule{\textwidth}{0.4pt}\\ 
+        Generate following elements randomly from $\G$: $\ \textbf{g} \rgen \G^{n}, \textbf{h} \rgen \G^n, u \rgen \G$
+        \\[2pt]
+        \textsl{crs} = $(\G, q, \textbf{g}, \textbf{h}, u, P)$, \textsl{wit} = $(\textbf{a}, \textbf{b}) \in \Z_q^n$, \textsl{stmt}: $P = \textbf{g}^\textbf{a} \cdot \textbf{h}^\textbf{b} \cdot u^{\langle \textbf{a},\textbf{b} \rangle}$
+        \vspace{2pt}
+    
+        % Prover
+        \item[] $\langle \mathcal{P}(\textsl{crs, stmt, wit}), \mathcal{V}(\textsl{crs, stmt}) \rangle$ :
+        \\[-5pt]\rule{\textwidth}{0.4pt}
+
+        \vspace{-4pt}
+        \item[] $\mathcal{V}$: $x \rgen \Z_q$, $\mathcal{V} \longrightarrow \P$: $x$
+    
+        \vspace{-4pt}
+        \item[] $\P$: \vspace{-4pt}
+        \begin{enumerate}[itemsep=5pt]
+            \item[(i)] $P^{\prime} = P \cdot U^{x \cdot c}$ 
+        \end{enumerate}
+
+        \item[] Set \textsl{crs'} = $(\G, q, \textbf{g}, \textbf{h}, u^x, P^{\prime})$, \textsl{wit'} = $(\textbf{a}, \textbf{b}) \in \Z_q^n$
+      
+        \item[] Run Protocol \ref{algo2} with $\langle \mathcal{P}(\textsl{crs', stmt, wit'}), \mathcal{V}(\textsl{crs', stmt}) \rangle$
+      
+    \end{itemize}
+\end{mdframed}
+
+Therefore, the above is the improved inner product argument for the language defined in (\ref{eq:ipa1}).
+We now state the Inner-Product Argument which shows that Protocol \ref{algo3} is a proof system for (\ref{eq:ipa1}).
+
+\begin{theorem}[Improved Inner-Product Argument]
+    The argument presented in Figure \ref{algo3} for the relation (\ref{eq:ipa1}) has perfect completeness and statistical witness-extended-emulation for either extracting a non-trivial discrete logarithm relation between $\textbf{g}, \textbf{h}, u$ or extracting a valid witness $\textbf{a}, \textbf{b}$.
+\end{theorem}
+\textit{Proof:} The proof for above theorem is given in Appendix B in \cite{Bunz2018}.
