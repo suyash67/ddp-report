@@ -69,6 +69,9 @@ For each $C_i \in C_{\text{anon}}$, the exchange also publishes a tag $I_i$ defi
 where $y_i = \H(k_{\text{exch}}, C_i)$ and $k_{\text{exch}}$ is a long-term secret key of the exchange.
 The reason for such a definition of $y_i$ is that it needs to be a determinitic function of the chosen cover output $C_i$.
 This is because we need to have consistent tag for a particular cover output $C_i$ appearing in $\C_{\text{anon}}$ over multiple \R proofs.
+If a randomly generated $y_i$ was used in different \R proofs of the same exchange, the tags corresponding to exchange-owned outputs would remain the same while the tags of cover outputs would change.
+In such a case, it would be trivial to point out the outputs owned by the exchange.
+Therefore, we need tags to be a determinitic function of the outputs in the anonymity set. 
 Additionally, the exchange publishes NIZK PoK $\sigma_i = (c_1^i,c_2^i, s_1^i, s_2^i, s_3^i)$ of the form 
 \begin{equation*}
     PoK\{(\alpha, \beta, \gamma) \ | \ (C_i = \alpha G + \beta H \ \wedge \ I_i = \alpha G^{\prime} + \beta H) \vee (I_i = \gamma G^{\prime}) \}.
@@ -81,7 +84,7 @@ A \R proof verification involves checking of any matches in tags of different ex
 \subsection{Drawbacks of \textnormal{{\fontfamily{qag}\selectfont Revelio}}}
 
 The size of a \R proof is $5n$ elements in $\Z_q$ and $n+1$ elements in $\G$.
-Privacy provided by \R for exchange-owned outputs directly depends on the number of cover addresses used.
+Privacy provided by \R for exchange-owned outputs directly depends on the number of cover outputs used.
 An exchange would ideally like to have the entire UTXO set as the anonymity set. 
 Since the proof sizes in \R increase linearly
 with the size of $C_{\text{anon}}$, setting $C_{\text{anon}}$ to be equal
