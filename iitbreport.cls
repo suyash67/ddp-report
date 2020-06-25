@@ -524,7 +524,7 @@ This #2 entitled ``\@title'' by \@author\ is approved for the degree of \@degree
 
 \newcommand*{\listofpublications}[1][List of Publications]{%	
 	\makeheadtoc{#1} 	
-	\chapter*{#1}
+  \chapter*{#1}
 }
 
 % Adding signature

@@ -44,7 +44,7 @@ An \emph{interactive proof} for the decision problem $\pi$ is described as follo
 \section{Basics of Elliptic Curves}
 \label{scn:ECC}
 
-Let $a, b \in \Rn$ such that $4a^3 + 27b^2 \neq 0$. Let $E$ be the set of solutions $(x,y) \in \Rn$ to the equation
+Let $a, b \in \Rn$ such that $4a^3 + 27b^2 \neq 0$. Let $E$ be the set of solutions $(x,y) \in \Rn^2$ to the equation
 \begin{equation}
     y^2 = x^3 + ax + b.
 \end{equation}
@@ -294,9 +294,9 @@ We also briefly discuss some key properties of commitments of our interest.
     A commitment scheme is said to be hiding if for all PPT adversaries $\mathcal{A}$, $\exists \mu(\lambda)$, a negligible function such that,  
 \end{defn}
 \begin{equation*}
-        \Bigg|
+        \left|
         \Pr
-        \Bigg[
+        \left[
         \begin{tabular}{c | l}
              \multirow{3}{*}{$\textit{b'=b}$} 
              &
@@ -308,9 +308,9 @@ We also briefly discuss some key properties of commitments of our interest.
              &
              $\textbf{com} = Com(\textit{x}_b; r),\ b' \leftarrow \mathcal{A}(pp, \ \textbf{com})$
         \end{tabular}
-        \Bigg]
+        \right]
         - \frac{1}{2}
-        \Bigg|
+        \right|
         \leq \mu(\lambda)
 \end{equation*}
 \textit{where the probability is over $b', r, Setup \ \text{and} \ \mathcal{A}$. For perfectly hiding schemes, $\mu(\lambda)=0$.}
@@ -322,7 +322,7 @@ In simple words, a commitment scheme is \textit{hiding} if it is impossible for 
 \end{defn}
 \begin{equation*}
         \Pr 
-        \Bigg[
+        \left[
         \begin{tabular}{c | c}
              \multirow{2}{*}{$\text{Com}(\textit{x}_0;r_0)= \text{Com}(\textit{x}_1;r_1) \wedge x_0 \neq x_1$} 
              &
@@ -330,7 +330,7 @@ In simple words, a commitment scheme is \textit{hiding} if it is impossible for 
              &
              $\textit{x}_0, x_1, r_0, r_1 \leftarrow \mathcal{A}(pp)$
         \end{tabular}
-        \Bigg] 
+        \right] 
         \leq \mu(\lambda)
 \end{equation*}
 \textit{where the probability is over Setup and $\mathcal{A}$. Again, if $\mu(\lambda)=0$ then we say the scheme is perfectly binding.}
@@ -457,7 +457,7 @@ To mathematically define the notion of zero-knowledge and zero-knowledge argumen
     \begin{multline*}
     \Bigg|
         \Pr
-        \Bigg[
+        \left[
         \begin{tabular}{c | l}
              \multirow{3}{*}{$\mathcal{A}_1(tr) = 1$}
              & $\sigma \leftarrow \text{Setup}(1^{\lambda},)$
@@ -467,10 +467,10 @@ To mathematically define the notion of zero-knowledge and zero-knowledge argumen
              \\
              & $tr \leftarrow \langle (\mathcal{P}^{*}(\sigma, u, s), V(u, s) \rangle$
         \end{tabular}
-        \Bigg]
+        \right]
         -\\
         \Pr 
-        \Bigg[
+        \left[
             \begin{tabular}{l | l}
                 \multirow{2}{*}{$\mathcal{A}_1(tr) = 1 \wedge$}
                 &
@@ -483,7 +483,7 @@ To mathematically define the notion of zero-knowledge and zero-knowledge argumen
                 &
                 $(tr, w) \leftarrow \mathcal{E}^{\mathcal{O}}(\sigma, u)$
            \end{tabular}
-           \Bigg]
+           \right]
     \Bigg|
     \leq \mu(\lambda)
     \end{multline*}
@@ -512,7 +512,7 @@ An argument of knowledge is zero knowledge if it does not leak information about
     
     \begin{multline*}
     \Pr
-    \Bigg[
+    \left[
     \begin{tabular}{c | l}
         \multirow{3}{*}{$(\sigma, u, w) \in \mathcal{R} \wedge \mathcal{A}_1(tr) = 1$}
          & $\sigma \leftarrow \text{Setup}(1^{\lambda},)$
@@ -522,10 +522,10 @@ An argument of knowledge is zero knowledge if it does not leak information about
          \\
          & $tr \leftarrow \langle (\mathcal{P}(\sigma, u, s), V(\sigma, u; \rho) \rangle$
     \end{tabular}
-    \Bigg]
+    \right]
     \\
     =\Pr
-    \Bigg[
+    \left[
     \begin{tabular}{c | l}
         \multirow{3}{*}{$(\sigma, u, w) \in \mathcal{R} \wedge \mathcal{A}_1(tr) = 1$}
          & $\sigma \leftarrow \text{Setup}(1^{\lambda},)$
@@ -535,7 +535,7 @@ An argument of knowledge is zero knowledge if it does not leak information about
          \\
          & $tr \leftarrow \mathcal{S}(u, \rho)$
     \end{tabular}
-    \Bigg]
+    \right]
     \end{multline*}
 
 \end{defn}

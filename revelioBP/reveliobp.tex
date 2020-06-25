@@ -1,4 +1,4 @@
-\chapter{\textnormal{{\fontfamily{qag}\selectfont RevelioBP}} - Shorter MimbleWimble Proof of Reserves Protocol}
+\chapter{\textnormal{{\fontfamily{qag}\selectfont RevelioBP}} - MimbleWimble Proof of Reserves Protocol with Short Proofs}
 \label{chap:revBP}
 
 \section{Introduction}
@@ -12,7 +12,8 @@ In this chapter, we present \Rplus, a proof of reserves protocol for MimbleWimbl
 This makes it feasible to choose the anonymity set to be the set of all UTXOs on the blockchain.  
 To make quantitative comparisons, we have implemented \RB  in Rust.
 At the time of writing this paper, the number of UTXOs on the Grin blockchain is approximately 161,000 \cite{GrinScanWebsite}.
-A \R proof of reserves for this anonymity set will have size 42 MB as against 0.27 MB using \RPlus instead.\footnote{Under the assumption that the exchange owns 5\% of all UTXOs.}
+% A \R proof of reserves for this anonymity set will have size 42 MB as against 0.27 MB using \RPlus instead.\footnote{Under the assumption that the exchange owns 5\% of all UTXOs.}
+A \R proof of reserves for this anonymity set will have size 32 MB as against 0.27 MB using \RPlus instead.\footnote{Under the assumption that the exchange owns 5\% of all UTXOs.}
 This reduction in proof size, however, comes at the cost of larger proof generation and verification times. If an exchange is willing to compromise on the size of the proof and is required to give frequent proofs of reserves,
 \R serves as a better choice. If proof sizes are critical for an exchange and it is willing to spend more time generating the proof, \RB clearly outperforms \Rw.   
 In conclusion, we quantitatively highlight the trade-off between proof size and performance in using \R and \RBw, both of which are based on the discrete log assumption.
@@ -923,8 +924,9 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   % \end{align*} 
   where $N = sn + n + s + 3$. The logarithmic dependence of the \RPlus proof size on the UTXO set size $n$ is the main advantage of \RPlus over \Rw.
   This is illustrated in Figure \ref{subfig:revBP1} where we compare the proof sizes of the \R and \RPlus protocols as a function of $n$ for $s=20$. 
-  For a UTXO set size of $2^{17}$, the \RPlus proof is a mere $2.9$ KB compared to a 300 MB \R proof.
-  
+  % For a UTXO set size of $2^{17}$, the \RPlus proof is a mere $2.9$ KB compared to a 300 MB \R proof.
+  For a UTXO set size of $2\times 10^5$, the \RPlus proof is a mere 2.5 KB compared to a 41 MB \R proof.
+
   %\subsection{Running Time}
   % We note that the main component of the \RPlus proof generation algorithm is a Bulletproofs protocol \cite{Bunz2018} used to generate the argument $\Uppi_{\textsf{Rev} \plus}$. The major difference is in the construction of the base vector used for computing Pedersen commitments to the secret vectors which results in more number of inner-product based constraint equations. However, since the basic framework remains the same, we can estimate the running time for generating the argument $\Uppi_{\textsf{Rev} \plus}$ using Bulletproofs with appropriate input sizes.
   
@@ -991,18 +993,32 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
           ]
           coordinates {
           % Updated plots
-          (	100	,	26.433	)
-          (	200	,	52.833	)
-          (	400	,	105.633	)
-          (	800	,	211.233	)
-          (	1600	,	422.433	)
-          (	3200	,	844.833	)
-          (	6400	,	1689.633	)
-          (	12800	,	3379.233	)
-          (	25600	,	6758.433	)
-          (	51200	,	13516.833	)
-          (	102400	,	27033.633	)
-          (	204800	,	54067.233	)
+          % (	100	,	26.433	)
+          % (	200	,	52.833	)
+          % (	400	,	105.633	)
+          % (	800	,	211.233	)
+          % (	1600	,	422.433	)
+          % (	3200	,	844.833	)
+          % (	6400	,	1689.633	)
+          % (	12800	,	3379.233	)
+          % (	25600	,	6758.433	)
+          % (	51200	,	13516.833	)
+          % (	102400	,	27033.633	)
+          % (	204800	,	54067.233	)
+
+          % Correction in Revelio proof size: 33*(6n+1)/1000
+          (	100	,	19.833	)
+          (	200	,	39.633	)
+          (	400	,	79.233	)
+          (	800	,	158.433	)
+          (	1600	,	316.833	)
+          (	3200	,	633.633	)
+          (	6400	,	1267.233	)
+          (	12800	,	2534.433	)
+          (	25600	,	5068.833	)
+          (	51200	,	10137.633	)
+          (	102400	,	20275.233	)
+          (	204800	,	40550.433	)
           };
           \legend{{\fontfamily{qag}\selectfont RevelioBP}, {\fontfamily{qag}\selectfont Revelio}}
       \end{axis}
@@ -1062,13 +1078,13 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
           ]
           coordinates {
           % Updated plots
-          (	10	,	256.532	)
-          (	20	,	256.332	)
-          (	50	,	257.032	)
-          (	100	,	258.032	)
-          (	200	,	256.232	)
-          (	500	,	256.932	)
-          (	800	,	256.632	)
+          (	10	,	192.032	)
+          (	20	,	192.032	)
+          (	50	,	192.032	)
+          (	100	,	192.032	)
+          (	200	,	192.032	)
+          (	500	,	192.032	)
+          (	800	,	192.032	)
           };
           \legend{{\fontfamily{qag}\selectfont RevelioBP}, {\fontfamily{qag}\selectfont Revelio}}
       \end{axis}
@@ -1381,6 +1397,10 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
       Non-collusion & \pro & \pro \\
       \hline
       Inflation resistance & \pro & \pro \\
+      \hline
+      Parallelizable & \con & \pro \\
+      \hline
+      Hiding own set size & \con & \pro \\
       \hline
     \end{tabular}
   \caption{Summary of performance comparison between \R and \RB}

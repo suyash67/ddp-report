@@ -85,6 +85,7 @@ A \R proof verification involves checking of any matches in tags of different ex
 
 The size of a \R proof is $5n$ elements in $\Z_q$ and $n+1$ elements in $\G$.
 Privacy provided by \R for exchange-owned outputs directly depends on the number of cover outputs used.
+Larger is the size of the anonymity set, greater is the privacy of the exchange-owned outputs.
 An exchange would ideally like to have the entire UTXO set as the anonymity set. 
 Since the proof sizes in \R increase linearly
 with the size of $C_{\text{anon}}$, setting $C_{\text{anon}}$ to be equal
@@ -93,6 +94,8 @@ to the whole UTXO set is not a scalable strategy.
 The collusion-resistance property of \R works only
 if all the exchanges generate their proofs using the same
 blockchain state.
-Cryptographically enforcing simultaneous proof generation is necessary to avoid cheating by exchanges.
-Both of the above drawbacks led us to the development of \RB which solves the above drawbacks with a higher computational cost.
+Enabling simultaneous proof generation is necessary to avoid cheating by exchanges.
+By simultaneous proof generation, we mean that the exchanges must have the same anonymity sets (ideally, the whole of UTXO set at a give point in time)
+and different exchanges could generate proofs in synchronisation with the blockchain state.
+Both of the above drawbacks led us to the development of \RB which alleviates the above drawbacks with a higher computational cost.
 We describe \RB in the next chapter. 

@@ -154,6 +154,7 @@
 \newcites{Pub}{List of Publications}
 
 
+
 %%% Macro definitions for Commonly used symbols
 \newcommand{\Rey}{\ensuremath{\mathrm{Re}}}
 \newcommand{\avg}[1]{\ensuremath{\overline{#1}}}
@@ -271,14 +272,14 @@
 %*******************************************************************
 %                         Title Page                            
 %*******************************************************************
-\title{A Shorter Proof of Reserves Protocol and a Method to Estimate Amount Upper Bounds for MimbleWimble}
+\title{A Proof of Reserves Protocol with Short Proofs and a Method to Estimate Amount Upper Bounds for MimbleWimble}
 \author{Suyash Bagad}
 
 %% Print the date. Today's date comes by default, change it here to 
 %% other date format, if required:
 
 %\date{\today}
-%\date{10 Mar 2016}
+\date{24 June 2020}
 
 
 %% The type of the report can be set here
@@ -346,7 +347,13 @@
 %******************************************************************
 %                          Abstract                             
 %******************************************************************  
-\include{abs}                    
+\include{abs}     
+
+%*******************************************************************
+%                         List of publications               
+%******************************************************************
+% \bibliography{pub}
+\include{pub}    
 
 %******************************************************************
 %                         Contents list                         
@@ -354,6 +361,11 @@
 %\figurespagefalse
 %\tablespagefalse
 \makecontents % Creats toc, lof, and lot
+
+%*******************************************************************
+%                        Acknowledgements                    
+%******************************************************************* 
+\include{ack}  
 
 %******************************************************************
 %                        Notations                              
@@ -386,18 +398,7 @@
 %******************************************************************
 %                         Bibliography or References          
 %******************************************************************  
-\bibliography{mylit}
-
-%*******************************************************************
-%                         List of publications               
-%******************************************************************
-% \bibliography{pub}
-\include{pub}         
-
-%*******************************************************************
-%                        Acknowledgements                    
-%******************************************************************* 
-\include{ack}           
+\bibliography{mylit}              
 
 
 % GAME OVER
