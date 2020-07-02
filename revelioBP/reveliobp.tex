@@ -746,6 +746,7 @@ The notation used in the protocol is given in Fig. \ref{fig:notation}, \ref{fig:
   % was computed correctly as the inner-product of vectors $\lvec(x) \text{ and } \rvec(x)$ for challenge $x \in \Z_q$.
   % Since we had defined $\hat{t}(x) = \langle \lvec(x), \rvec(x) \rangle = t_0 + t_1x + t_2x^2$, the second verification equation checks if 
   % $\hat{t}$ satisfies the quantity $(t_0 + t_1x + t_2x^2)$.  
+  \vspace{1cm}
   
   As the prover has to send vectors $\lvec, \rvec \in \Z_q^N$ in the last round, the \proto protocol results in a communication cost of $\mathcal{O}(N)$ for the prover, where $N$ is the length of the secret vectors.
   We reduce this to $\mathcal{O}(\text{log}_2(N))$ using the inner-product argument in \cite{Bunz2018}. Concretely, the language for the inner-product argument is expressed as 

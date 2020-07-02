@@ -85,6 +85,23 @@ A Grin block consists of the following:
   \item[(iii)] A list of $M$ output commitments $O_1, O_2,\ldots,O_M$ where $M \ge 1$. Each output commitment is tagged as either a coinbase output or a regular transaction output. Each output commitment is also accompanied by a range proof to prove that it commits to an amount in the range $\{0,1,2, \dots,2^{64}-1\}$.  
   \item[(iv)] A list of $N$ \textit{transaction kernels} each of which contains a fee amount $f_i \in \mathbb{F}_n$ and a curve point $X_i \in \mathbb{G}$ called the \textit{kernel excess}. Each kernel also contains a Schnorr signature proving that $X_i$ is of the form $x_iG$ for some $x_i \in \mathbb{F}_n$. Each transaction kernel is also tagged either as a coinbase kernel or a regular transaction kernel.
 \end{enumerate}
+
+\begin{figure}[t]
+  \includegraphics[width=0.92\textwidth]{Figures/block1.png}
+  \centering
+  \caption{A visual of the Dandelion protocol for transaction aggregation and the process of cut-through.
+  Note that the coinbase outputs are denoted as $O_{\text{cb}}$ in blue colour.}
+  \label{fig:dandelion}
+\end{figure}
+
+\begin{figure}[h!]
+  \includegraphics[width=0.27\textwidth]{Figures/block2.png}
+  \centering
+  \caption{Inclusion of kernels and fees in a Grin block. Note that the total number of transactions in a block are equal to the total number of kernels in a block.
+  Also, $f_{\text{cb}} = 0$, the fees for coinbase transaction, for all Grin blocks.}
+  \label{fig:kernels}
+\end{figure}
+
 % Each of these commitments refers to an output commitment in a previous block.An output is known as a \textit{coinbase} output if it is included by miners to store the mining reward and fees they earn
 %during block mining. This transaction is known as \textit{coinbase} transaction.
 %An output as a part of a regular transaction is known as \textit{transaction} output. 
@@ -107,6 +124,7 @@ A Grin block consists of the following:
 %However, the total number of transactions in a block is equal to the number of kernels in that block.
 %Suppose a block contains $L$ inputs $I_1, I_2, \dots, I_L$, $M$ outputs $O_1,O_2, \dots, O_M$
 %and $N$ kernel excesses $X_1, X_2 \dots, X_N$ with individual fees $f_1, f_2 \dots, f_N$.
+Refer to Figures \ref{fig:dandelion}, \ref{fig:kernels} for visual representation of a typical Grin block.
 Let $\mathcal{I}_{\text{cb}} \subset \{1,2,\ldots,M\}$ be the set of indices corresponding to coinbase outputs and $\mathcal{I}_{\text{cb}}^c$ be the set of the remaining indices corresponding to RTOs. Let $\mathcal{I}_{\text{ck}} \subset \{1,2,\ldots,N\}$ be the set of indices corresponding to coinbase kernels and $\mathcal{I}_{\text{ck}}^c$ be the set of indices corresponding to regular transaction kernels. A valid block has to satisfy the following equations.
 \begin{align}
   \sum_{i \in \mathcal{I}_{\text{cb}}} O_i - \left(\sum_{i=1}^{N}f_i\right)H - r H & = \sum_{i \in \mathcal{I}_{\text{ck}}} X_i,\\

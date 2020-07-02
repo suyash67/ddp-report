@@ -19,8 +19,8 @@ However, it suffers from two major drawbacks:
 (ii) collusion between multiple exchanges can be detected only if exchanges generate their proofs at the same blockchain state.
 \RB successfully alleviates both of these drawbacks using a Bulletproofs \cite{Bunz2018} based framework.
 The proof size of \RB scales logarithmically in the anonymity set.
-By linking \RB proof generation to the blockchain state, we enforce the exchanges to generate proofs of reserves simultaneously, enabling robust collusion detection.
-Further, we use multi-exponentiation technique to boost verification of \RB proofs, making it \textasciitilde2X faster than proof generation.
+By linking \RB proof generation to the blockchain state, we enable the exchanges to generate proofs of reserves simultaneously (corresponding to a particular blockchain state), facilitating robust collusion detection.
+Further, we use multi-exponentiation technique to boost verification of \RB proofs, making it \textasciitilde3X faster than proof generation.
 Shorter proof sizes and faster verification brings great convenience to the customers since they might possess limited computational power.
 On the other hand, benefits of \RB come with a higher computational cost for the exchanges.    
 % Our technique can be generalized for other privacy-focussed cryptocurrencies like Monero.

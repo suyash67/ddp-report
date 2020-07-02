@@ -283,8 +283,8 @@
       \@reptype \par
       %\vspace{\stretch{0.3}}       
       \if@degree{
-        Submitted in partial fulfillment of  \\ [.25\baselineskip] 
-        the requirements for the degree of \par
+        Submitted in partial fulfillment of  \par 
+        the requirements for the degree of \\ [.25\baselineskip]
         {\Usefont{cmr}   \bfseries  \@degree }
       }
        \\ [.25\baselineskip]      
@@ -383,14 +383,28 @@
 
 %**************************Certificate page*************************
 \newcommand*{\GuideSign}{%
-	\begin{center}	
-		\begin{tabular}{p{0.6\linewidth}c}
-		           	  & \rule{4cm}{1pt}\\	
-			Date: \@date    &  \@supervisor\\         
-		\end{tabular}	
-	\end{center}
+\renewcommand{\arraystretch}{2.8}
+  \begin{flushleft}
+    \begin{tabular}{ @{} m{0.3\textwidth}  m{0.65\textwidth} @{} } 
+      Name of Examiners & Prof. Sachin Patkar, Prof. Nikhil Karamchandani \\ 
+      Name of Supervisor  & \@supervisor \\ 
+      Signature of Supervisor  & \rule{4cm}{0.8pt} \\ 
+      Name of Chairman & NA
+    \end{tabular}
+  \end{flushleft}
+  \renewcommand{\arraystretch}{1}
+  \vspace{1cm}
+  Date: \@date  \\[4pt]
+  Place: Mumbai
+  % \begin{flushleft}	
+	% 	\begin{tabular}{p{0.6\linewidth}c}
+	% 	           	  & \rule{4cm}{1pt}\\	
+  %     Date: \@date    &  \@supervisor\\
+  %     Place: Mumbai    &  \\         
+	% 	\end{tabular}	
+	% \end{flushleft}
 }
-\newcommand*{\makecertificate}[2][Acceptance Certificate]{%
+\newcommand*{\makecertificate}[2][Approval Sheet]{%
 \cleardoublepage\phantomsection 	
 	\thispagestyle{empty} 	
 	\begin{center}	
@@ -399,11 +413,11 @@
 		{\large\textbf{Indian Institute of Technology, Bombay}}
 	\end{center}
 \vspace{1.5\baselineskip} 
-The #2  entitled ``\@title'' submitted by \@author{} (\@rollnum{}) may be accepted for being evaluated.\par
-\vspace{4\baselineskip} 
+The #2  entitled ``\@title'' submitted by \@author{} (\@rollnum{}) is approved for the degree of Master of Technology.\par
+\vspace{1\baselineskip} 
 \noindent
 \GuideSign 	
-	}
+}
 
 
 %**************************Copyright page******************************
@@ -462,7 +476,7 @@ This #2 entitled ``\@title'' by \@author\ is approved for the degree of \@degree
 	\vspace{3cm}  
 	\begin{center}	
 		\begin{tabular}{p{0.6\linewidth}c}
-		           	  & \rule{4cm}{1pt}\\	
+		           	  & \rule{4cm}{0.8pt}\\	
 			          &  \@author\\
 	   Date: #1       & (\@rollnum) \\
 		\end{tabular}	

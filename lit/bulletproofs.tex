@@ -49,7 +49,7 @@ Here, $\delta(y,z) \in \Z_q$ is a quantity that the verifier can easily calculat
 
 To address this issue, by introducing two additional blinding terms $\textbf{s}_L, \textbf{s}_R \in \Z_q^{n}$ to blind these vectors. Thus, we define two linear vector polynomials\\
 $l(X), r(X) \in \Z_q^n [X]$ and $t(X) \in \Z_q$ as follows:
-\vspace{-4mm}
+% \vspace{-4mm}
 \begin{align*}
     l(X) &= \textbf{a}_L - z\cdot \textbf{1}^n + \textbf{s}_L \cdot X\\
     r(X) &= \textbf{y}^n \circ (\textbf{a}_R + z\cdot \textbf{1}^n + \textbf{s}_R\cdot X) + z^2 \cdot \textbf{2}^n\\
@@ -173,6 +173,7 @@ To so do, the prover commits to the remaining coefficients of $t(X)$, $t_1, t_2 
     \end{enumerate}
 \end{itemize}
 \end{mdframed}
+\vspace{1cm}
 Some key observations from the above protocol in Figure \ref{fig:protocol_BP} are:
 \begin{enumerate}
     \item In this protocol, $\mathcal{P}$ sends $(\textbf{l}, \textbf{r})$, whose size is linear in $n$.
